@@ -2,9 +2,7 @@
 
 typedef struct form
 {
-    bool removed;
     int type;
-    int sel;
     int id;
     double energy; // Exclusive for naus (rectagles)
     double balance; // Exclusive for naus (rectagles)
@@ -148,18 +146,6 @@ void setFullText(void* formtoset, int id, double x, double y, char* corb, char a
     strcpy(f->txto, txto);
 }
 
-void setFormRemove(void* formtoset, bool removed)
-{
-    form* f = formtoset;
-    f->removed = removed;
-}
-
-void setFormSel(void* formtoset, int sel)
-{
-    form* f = formtoset;
-    f->sel = sel;
-}
-
 void setNauEnergy(void* formtoset, double energy)
 {
     form* f = formtoset;
@@ -216,22 +202,10 @@ void setFormCorp(void* formtoset, char* corp)
 
 /*>>>>>>>>>>All gets<<<<<<<<<<*/
 
-bool getFormRemoved(void* formtoget)
-{
-    form* f = formtoget;
-    return f->removed;
-}
-
 int getFormType(void* formtoget)
 {
     form* f = formtoget;
     return f->type;
-}
-
-int getFormSel(void* formtoget)
-{
-    form* f = formtoget;
-    return f->sel;
 }
 
 int getFormId(void* formtoget)

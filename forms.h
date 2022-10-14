@@ -33,13 +33,9 @@ void setFullLine(void* formtoset, int id, double x, double y, double x2, double 
 
 void setFullText(void* formtoset, int id, double x, double y, char* corb, char a, char* txto);
 
-void setFormRemove(void* formtoset, bool removed);
-
 void setNauEnergy(void* formtoset, double energy);
 
 void setNauBalance(void* formtoset, double balance);
-
-void setFormSel(void* formtoset, int sel);
 
 void setFormX(void* formtoset, double x);
 
@@ -55,11 +51,7 @@ void setFormCorp(void* formtoset, char* corp);
 
 /*>>>>>>>>>>All gets<<<<<<<<<<*/
 
-bool getFormRemoved(void* formtoget);
-
 int getFormType(void* formtoget);
-
-int getFormSel(void* formtoget);
 
 int getFormId(void* formtoget);
 
