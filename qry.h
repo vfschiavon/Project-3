@@ -7,12 +7,12 @@
 
 void e(SRbTree tree, FILE* qry, FILE* qrytxt);
 
-void mv(SRbTree tree, FILE* qry, FILE* qrytxt, FILE* qrysvg);
+void mv(SRbTree tree, FILE* qry, FILE* qrytxt);
 
 void lr(SRbTree tree, FILE* qry, FILE* qrytxt, FILE* qrysvg);
 
 void d(SRbTree tree, FILE* qry, FILE* qrytxt, FILE* qrysvg);
 
-void mc(SRbTree tree, FILE* qry, FILE* qrytxt, FILE* qrysvg);
+void mc(SRbTree tree, FILE* qry, FILE* qrytxt);
 
 #endif

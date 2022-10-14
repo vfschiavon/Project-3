@@ -27,7 +27,7 @@ void e(SRbTree tree, FILE* qry, FILE* qrytxt)
 }
 
 /* Functions and structs for MV */
-void mv(SRbTree tree, FILE* qry, FILE* qrytxt, FILE* qrysvg)
+void mv(SRbTree tree, FILE* qry, FILE* qrytxt)
 {
 
 }
@@ -45,7 +45,7 @@ void d(SRbTree tree, FILE* qry, FILE* qrytxt, FILE* qrysvg)
 }
 
 /* Functions and structs for MC */
-void mc(SRbTree tree, FILE* qry, FILE* qrytxt, FILE* qrysvg)
+void mc(SRbTree tree, FILE* qry, FILE* qrytxt)
 {
 
 }
