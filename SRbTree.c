@@ -8,7 +8,7 @@ typedef struct node
     // Anchors
     double xa;
     double ya;
-    // Minimun bounding boxex of figures
+    // Minimun bounding boxes of figures
     double mx1;
     double my1;
     double mx2;
@@ -145,6 +145,132 @@ void fixupSRb(SRbTree t, node* pZ)
     tre->root->color = 'b';
 }
 
+node* searchNode(node* currentnode, double pXa, double pYa)
+{
+    node* result = NULL;
+    if (currentnode)
+    {
+        if (currentnode->xa == pXa && currentnode->ya == pYa)
+        {
+            result = currentnode;
+        }
+        else
+        {
+            result = searchNode(currentnode->left, pXa, pYa);
+            if (!result)
+            {
+                result = searchNode(currentnode->right, pXa, pYa);
+            }
+        }
+    }
+    else
+    {
+        return NULL;
+    }
+    return result;
+}
+
+void transplantSRb(SRbTree t, node* u, node* v)
+{
+    tree* tre = t;
+    if (!u->father)
+    {
+        tre->root = v;
+    }
+    else if (u == u->father->left)
+    {
+        u->father->left = v;
+    }
+    else
+    {
+        u->father->right = v;
+    }
+    if (v)
+    {
+        v->father = u->father;
+    }
+}
+
+node* minimumNode(node* x)
+{
+    while (x->left)
+    {
+        x = x->left;
+    }
+    return x;
+}
+
+void deleteFixupSRb(tree* t, node* x)
+{
+    node* w = NULL;
+    while (x != t->root && x->color == 'b')
+    {
+        if (x == x->father->left)
+        {
+            w = x->father->right;
+            if (w->color == 'r')
+            {
+                w->color = 'b';
+                x->father->color = 'r';
+                leftRotate(t, x->father);
+                w = x->father->right;
+            }
+            if (w->left->color == 'b' && w->right->color == 'b')
+            {
+                w->color = 'r';
+                x = x->father;
+            }
+            else
+            {
+                if (w->right->color == 'b')
+                {
+                    w->left->color = 'b';
+                    w->color = 'r';
+                    rightRotate(t, w);
+                    w = x->father->right;
+                }
+                w->color = x->father->color;
+                x->father->color = 'b';
+                w->right->color = 'b';
+                leftRotate(t, x->father);
+                x = t->root;
+            }
+        }
+        else
+        {
+            w = x->father->left;
+            if (w->color == 'r')
+            {
+                w->color = 'b';
+                x->father->color = 'r';
+                rightRotate(t, x->father);
+                w = x->father->left;
+            }
+            if (w->right->color == 'b' && w->left->color == 'b')
+            {
+                w->color = 'r';
+                x = x->father;
+            }
+            else
+            {
+                if (w->left->color == 'b')
+                {
+                    w->right->color = 'b';
+                    w->color = 'r';
+                    leftRotate(t, w);
+                    w = x->father->left;
+                }
+                w->color = x->father->color;
+                x->father->color = 'b';
+                w->left->color = 'b';
+                rightRotate(t, x->father);
+                x = t->root;
+            }
+        }
+    }
+    x->color = 'b';
+}
+
 void recursivePrintNode(node* currentnode, FILE* dot)
 {
     if (currentnode)
@@ -261,15 +387,65 @@ Node insertBbSRb(SRbTree t, double mbbX1, double mbbY1, double mbbX2, double mbb
     return insertSRb(t, mbbX1, mbbY1,  mbbX1, mbbY1,  mbbX2, mbbY2,  info);
 }
 
+Info removeSRb(SRbTree t, double xa, double ya, double* mbbX1, double* mbbY1, double* mbbX2, double* mbbY2)
+{
+    tree* tre = t;
+    node* z = searchNode(tre->root, xa, ya);
+    node* y = z;
+    node* x = NULL;
+    char yOriginalColor = y->color;
+
+    if (!z->left)
+    {
+        x = z->right;
+        transplantSRb(t, z, z->right);
+    }
+    else if (!z->right)
+    {
+        x = z->left;
+        transplantSRb(t, z, z->left);
+    }
+    else
+    {
+        y = minimumNode(z->right);
+        yOriginalColor = y->color;
+        x = y->right;
+        if (y->father == z)
+        {
+            x->father = y;
+        }
+        else
+        {
+            transplantSRb(t, y, y->right);
+            y->right = z->right;
+            y->right->father = y;
+        }
+        transplantSRb(t, z, y);
+        y->left = z->left;
+        y->left->father = y;
+        y->color = z->color;
+    }
+    if (yOriginalColor == 'b')
+    {
+        deleteFixupSRb(t, x);
+    }
+
+    // Doing right?????
+    printf("z->info: %d\n", getFormId(z->info));
+    Info info = z->info;
+    free(z);
+    tre->size--;
+    printf("info: %d\n", getFormId(info));
+
+    return info;
+}
+
 void printSRb(SRbTree t, char* nomeArq)
 {
     FILE* dot = fopen(nomeArq, "w");
     if (dot)
     {
         tree* tre = t;
-
-        // Create nil node;
-        // Function that join all leafs to nil;
 
         fprintf(dot, "digraph G\n{\n");
         fprintf(dot, "\tfontname=\"Helvetica,Arial,sans-serif\"\n");
@@ -290,18 +466,6 @@ void printSRb(SRbTree t, char* nomeArq)
         exit(EXIT_FAILURE);
     }
 }
-
-// Remove this!!!
-// void percAux(node* currentnode, FvisitaNo fVisita, void* aux)
-// {
-//     if (currentnode) {
-//         fVisita(currentnode->info, currentnode->xa, currentnode->ya, currentnode->mx1, currentnode->my1, currentnode->mx2, currentnode->my2, aux);
-//         percAux(currentnode->left, fVisita, aux);
-//         percAux(currentnode->right, fVisita, aux);
-//     } else {
-//         return;
-//     }
-// }
 
 void killSRb(SRbTree t)
 {

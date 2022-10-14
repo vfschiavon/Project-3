@@ -61,37 +61,37 @@ Node insertBbSRb(SRbTree t, double mbbX1, double mbbY1, double mbbX2, double mbb
  * Equivalente a insertSRb(t, mbbX1, mbbY1,  mbbX1, mbbY1,  mbbX2, mbbY2,  info)
  */
 
-void getBbPartSRb(SRbTree t, double x, double y, double w, double h, Lista resultado);
+void getBbPartSRb(SRbTree t, double x, double y, double w, double h, Lista resultado); // ---------- TO DO ------------
 /*
  * Insere na lista resultado os nos da arvore (Node) que seu retangulo envolvente possua alguma
  * interseccao com a regiao retangula de ancora (x,y), largura w e altura h.
  */
 
-void getBbSRb(SRbTree t, double x, double y, double w, double h, Lista resultado);
+void getBbSRb(SRbTree t, double x, double y, double w, double h, Lista resultado); // ---------- TO DO ------------
 /*
  * Similar a getBbPartSRb, porem seleciona apenas os nos cujos retangulos envolventes estejam
  * inteiramente dentro da regiao.
  */
 
-Info getInfoSRb(SRbTree t, Node n, double* xa, double* ya, double* mbbX1, double* mbbY1, double* mbbX2, double* mbbY2);
+Info getInfoSRb(SRbTree t, Node n, double* xa, double* ya, double* mbbX1, double* mbbY1, double* mbbX2, double* mbbY2); // ---------- TO DO ------------
 /*
  * Retorna a informacao associada ao no� n, sua ancora (xa,ya) e o retangulo envolvente (mbbX1,mbbY1) -- (mbbX2,mbbY2). 
  * Este no� deve ser um no� valido (veja acima).
  */
 
-Node getNodeSRb(SRbTree t, double xa, double ya, double* mbbX1, double* mbbY1, double* mbbX2, double* mbbY2);
+Node getNodeSRb(SRbTree t, double xa, double ya, double* mbbX1, double* mbbY1, double* mbbX2, double* mbbY2); // ---------- TO DO ------------
 /*
  * Retorna o no da arvore associado a ancora (xa,ya) e o retangulo envolvente; NULL, se tal ancora nao existir.
  */
 
-void updateInfoSRb(SRbTree t, Node n, Info i);
+void updateInfoSRb(SRbTree t, Node n, Info i); // ---------- TO DO ------------
 /*
  * Altera a informacao associada ao no n que deve ser existente e valido. 
  * A ancora e o MBB deste no nao sao alterados, portanto, a informacao deve permanecer compativel a estes dois
  * valores.
  */
 
-Info removeSRb(SRbTree t,double xa, double ya, double* mbbX1, double* mbbY1, double* mbbX2, double* mbbY2);
+Info removeSRb(SRbTree t, double xa, double ya, double* mbbX1, double* mbbY1, double* mbbX2, double* mbbY2);
 /*
  * Remove o no' da arvore cuja chave e� a coordenada (xa,ya). Qualquer no' da arvore retornado por operacoes anteriores
  * deve ser considerado invalido.
@@ -109,17 +109,15 @@ void printSRb(SRbTree t, char* nomeArq);
  * Invoca a funcao fVisita (veja descricao acima) em cada no� visitado
  */
 
-void percursoLargura(SRbTree t, FvisitaNo fVisita, void* aux);
+void percursoLargura(SRbTree t, FvisitaNo fVisita, void* aux); // ---------- TO DO ------------
 
-void percursoSimetrico(SRbTree t, FvisitaNo fVisita, void* aux);
+void percursoSimetrico(SRbTree t, FvisitaNo fVisita, void* aux); // ---------- TO DO ------------
 
-void percursoProfundidade(SRbTree t, FvisitaNo fVisita, void* aux);
+void percursoProfundidade(SRbTree t, FvisitaNo fVisita, void* aux); // ---------- TO DO ------------
+
+void killSRb(SRbTree t);
 /*
  * Desaloca todos os recursos usados pela arvore t.
  */
-
-void killSRb(SRbTree t);
-
-void printTeste(Info i, double x, double y, double mbbX1, double mbbY1, double mbbX2, double mbbY2, void* aux);
 
 #endif
