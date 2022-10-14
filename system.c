@@ -3,6 +3,7 @@
 #include "forms.h"
 #include "paths.h"
 #include "qry.h"
+#include "svg.h"
 
 /*>>>>>>>>>>readParam<<<<<<<<<<*/
 void flagE(char** argv, int i, void* paths)
@@ -270,24 +271,25 @@ void readQry(SRbTree tree, void* paths)
                 }
                 else if (!strcmp(func, "mv")) // Move
                 {
-                    mv(tree, qry, qrytxt, qrysvg);
+                    //mv(tree, qry, qrytxt);
                 }
                 else if (!strcmp(func, "lr")) // Launch net
                 {
-                    lr(tree, qry, qrytxt, qrysvg);
+                    //lr(tree, qry, qrytxt, qrysvg);
                 }
                 else if (!strcmp(func, "d")) // Shoot
                 {
-                    d(tree, qry, qrytxt, qrysvg);
+                    //d(tree, qry, qrytxt, qrysvg);
                 }
                 else if (!strcmp(func, "mc")) // Move shoal
                 {
-                    mc(tree, qry, qrytxt, qrysvg);
+                    //mc(tree, qry, qrytxt);
                 }
                 strcpy(func, " ");
             }
             fprintf(qrytxt, "\n>>End of report.");
             fclose(qrytxt);
+            percursoProfundidade(tree, printSvg, qrysvg);
             fprintf(qrysvg, "</svg>\n");
             fclose(qrysvg);
             printSRb(tree, getBsdGeoQryDot(paths));
