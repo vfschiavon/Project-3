@@ -81,4 +81,6 @@ char* getFormTxto(void* formtoget);
 
 bool formFullInside(Info i, double x1, double y1 , double x2, double y2);
 
+bool isAnchorAndMbbEqual(void* orignial, void* tocompare);
+
 #endif

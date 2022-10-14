@@ -332,25 +332,65 @@ bool textFullInside(double tx, double ty, double x1, double y1, double x2, doubl
 
 bool formFullInside(Info i, double x1, double y1 , double x2, double y2)
 {
-    if (!getFormSel(i))
+    switch (getFormType(i))
     {
-        switch (getFormType(i))
-        {
-            case CIRCLE:
-                return circleFullInside(getFormX(i), getFormY(i), getFormR(i), x1, y1, x2, y2);
-                break;
-            case RECTANGLE:
-                return rectangleFullInside(getFormX(i), getFormY(i), getFormW(i), getFormH(i), x1, y1, x2, y2);
-                break;
-            case LINE:
-                return lineFullInside(getFormX(i), getFormY(i), getFormX2(i), getFormY2(i), x1, y1, x2, y2);
-                break;
-            case TEXT:
-                return textFullInside(getFormX(i), getFormY(i), x1, y1, x2, y2);
-                break;
-            default:
-                break;
-        }
+        case CIRCLE:
+            return circleFullInside(getFormX(i), getFormY(i), getFormR(i), x1, y1, x2, y2);
+            break;
+        case RECTANGLE:
+            return rectangleFullInside(getFormX(i), getFormY(i), getFormW(i), getFormH(i), x1, y1, x2, y2);
+            break;
+        case LINE:
+            return lineFullInside(getFormX(i), getFormY(i), getFormX2(i), getFormY2(i), x1, y1, x2, y2);
+            break;
+        case TEXT:
+            return textFullInside(getFormX(i), getFormY(i), x1, y1, x2, y2);
+            break;
+        default:
+            break;
+    }
+    return false;
+}
+
+bool isAnchorAndMbbEqual(void* orignial, void* tocompare)
+{
+    form* orig = orignial;
+    form* comp = tocompare;
+
+    switch (orig->type)
+    {
+        case CIRCLE:
+            if (orig->x == comp->x && orig->y == comp->y && orig->r == comp->r)
+            {
+                return true;
+            }
+            break;
+        case RECTANGLE:
+            if (orig->x == comp->x && orig->y == comp->y && orig->w == comp->w && orig->h == comp->h)
+            {
+                return true;
+            }
+            break;
+        case LINE:;
+            double ancOrigX, ancOrigY, ancCompX, ancCompY;
+            defineLineAnchor(&ancOrigX, &ancOrigY, orig->x, orig->y, orig->x2, orig->y2);
+            defineLineAnchor(&ancCompX, &ancCompY, comp->x, comp->y, comp->x2, comp->y2);
+            if (ancOrigX == ancCompX && ancOrigY == ancCompY)
+            {
+                if (fabs(orig->x2 - orig->x) == fabs(comp->x2 - comp->x) && fabs(orig->y2 - orig->y) == fabs(comp->y2 - comp->y))
+                {
+                    return true;
+                }
+            }
+            break;
+        case TEXT:
+            if (orig->x == comp->x && orig->y == comp->y)
+            {
+                return true;
+            }
+            break;
+        default:
+            break;
     }
     return false;
 }
