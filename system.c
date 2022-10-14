@@ -2,6 +2,7 @@
 
 #include "forms.h"
 #include "paths.h"
+#include "qry.h"
 
 /*>>>>>>>>>>readParam<<<<<<<<<<*/
 void flagE(char** argv, int i, void* paths)
@@ -265,23 +266,23 @@ void readQry(SRbTree tree, void* paths)
 
                 if (!strcmp(func, "e")) // Energize
                 {   
-                    
+                    funcE(tree, qry, qrytxt);
                 }
                 else if (!strcmp(func, "mv")) // Move
                 {
-                    
+                    funcMV(tree, qry, qrytxt, qrysvg);
                 }
                 else if (!strcmp(func, "lr")) // Launch net
                 {
-                    
+                    funcLR(tree, qry, qrytxt, qrysvg);
                 }
                 else if (!strcmp(func, "d")) // Shoot
                 {
-                    
+                    funcD(tree, qry, qrytxt, qrysvg);
                 }
                 else if (!strcmp(func, "mc")) // Move shoal
                 {
-
+                    funcMC(tree, qry, qrytxt, qrysvg);
                 }
                 strcpy(func, " ");
             }
