@@ -320,6 +320,20 @@ void recursiveProfundidade(node* currentnode, FvisitaNo fVisita, void* aux)
     }
 }
 
+void recursiveSimetrico(node* currentnode, FvisitaNo fVisita, void* aux)
+{
+    if (currentnode)
+    {
+        recursiveSimetrico(currentnode->left, fVisita, aux);
+        fVisita(currentnode->info, currentnode->xa, currentnode->ya, currentnode->mx1, currentnode->mx2, currentnode->my1, currentnode->my2, aux);
+        recursiveSimetrico(currentnode->right, fVisita, aux);
+    }
+    else 
+    {
+        return;
+    }
+}
+
 void recursiveFree(void* currentnode)
 {
     node* n = currentnode;
@@ -551,6 +565,12 @@ void printSRb(SRbTree t, char* nomeArq)
         printf("Error opening the .dot file.\n");
         exit(EXIT_FAILURE);
     }
+}
+
+void percursoSimetrico(SRbTree t, FvisitaNo fVisita, void* aux)
+{
+    tree* tre = t;
+    recursiveSimetrico(tre->root, fVisita, aux);
 }
 
 void percursoProfundidade(SRbTree t, FvisitaNo fVisita, void* aux)

@@ -111,7 +111,7 @@ void printSRb(SRbTree t, char* nomeArq);
 
 void percursoLargura(SRbTree t, FvisitaNo fVisita, void* aux); // ---------- TO DO ------------
 
-void percursoSimetrico(SRbTree t, FvisitaNo fVisita, void* aux); // ---------- TO DO ------------
+void percursoSimetrico(SRbTree t, FvisitaNo fVisita, void* aux);
 
 void percursoProfundidade(SRbTree t, FvisitaNo fVisita, void* aux);
 
