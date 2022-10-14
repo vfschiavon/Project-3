@@ -2,6 +2,7 @@
 
 #include "SRbTree.h"
 #include "forms.h"
+#include "qry.h"
 
 typedef struct node
 {
