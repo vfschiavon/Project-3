@@ -450,18 +450,12 @@ Node getNodeSRb(SRbTree t, double xa, double ya, double* mbbX1, double* mbbY1, d
 void updateInfoSRb(SRbTree t, Node n, Info i)
 {
     node* no = n;
-    switch (getFormType(i)) // Make one function for each case, this function needs to be in forms.c and receive no->info and i as parameters
+    if (no)
     {
-        case CIRCLE:
-            break;
-        case RECTANGLE:
-            break;
-        case LINE:
-            break;
-        case TEXT:
-            break;
-        default:
-            break;
+        if (isAnchorAndMbbEqual(no->info, i))
+        {
+            no->info = i;
+        }
     }
 }
 
