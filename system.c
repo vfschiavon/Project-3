@@ -92,10 +92,7 @@ void bsdAndQry(void* paths)
 
 void readParam(int argc, char** argv, void* paths)
 {
-    bool readbed = false;
-    bool readgeo = false;
-    bool readbsd = false;
-    bool readqry = false;
+    bool readbed = false, readgeo = false, readbsd = false, readqry = false;
 
     for (int i = 1; i < argc; i++)
     {
@@ -288,9 +285,6 @@ void readQry(SRbTree tree, void* paths)
                 }
                 strcpy(func, " ");
             }
-
-            // Make all print functions (.svg and .dot)
-
             fprintf(qrytxt, "\n>>End of report.");
             fclose(qrytxt);
             fprintf(qrysvg, "</svg>\n");
