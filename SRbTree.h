@@ -73,18 +73,18 @@ void getBbSRb(SRbTree t, double x, double y, double w, double h, Lista resultado
  * inteiramente dentro da regiao.
  */
 
-Info getInfoSRb(SRbTree t, Node n, double* xa, double* ya, double* mbbX1, double* mbbY1, double* mbbX2, double* mbbY2); // ---------- TO DO ------------
+Info getInfoSRb(SRbTree t, Node n, double* xa, double* ya, double* mbbX1, double* mbbY1, double* mbbX2, double* mbbY2);
 /*
  * Retorna a informacao associada ao no� n, sua ancora (xa,ya) e o retangulo envolvente (mbbX1,mbbY1) -- (mbbX2,mbbY2). 
  * Este no� deve ser um no� valido (veja acima).
  */
 
-Node getNodeSRb(SRbTree t, double xa, double ya, double* mbbX1, double* mbbY1, double* mbbX2, double* mbbY2); // ---------- TO DO ------------
+Node getNodeSRb(SRbTree t, double xa, double ya, double* mbbX1, double* mbbY1, double* mbbX2, double* mbbY2);
 /*
  * Retorna o no da arvore associado a ancora (xa,ya) e o retangulo envolvente; NULL, se tal ancora nao existir.
  */
 
-void updateInfoSRb(SRbTree t, Node n, Info i); // ---------- TO DO ------------
+void updateInfoSRb(SRbTree t, Node n, Info i);
 /*
  * Altera a informacao associada ao no n que deve ser existente e valido. 
  * A ancora e o MBB deste no nao sao alterados, portanto, a informacao deve permanecer compativel a estes dois

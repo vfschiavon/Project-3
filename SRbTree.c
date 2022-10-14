@@ -387,6 +387,84 @@ Node insertBbSRb(SRbTree t, double mbbX1, double mbbY1, double mbbX2, double mbb
     return insertSRb(t, mbbX1, mbbY1,  mbbX1, mbbY1,  mbbX2, mbbY2,  info);
 }
 
+Info getInfoSRb(SRbTree t, Node n, double* xa, double* ya, double* mbbX1, double* mbbY1, double* mbbX2, double* mbbY2)
+{
+    node* no = n;
+    if (xa)
+    {
+        *xa = no->xa;
+    }
+    if (ya)
+    {
+        *ya = no->ya;
+    }
+    if (mbbX1)
+    {
+        *mbbX1 = no->mx1;
+    }
+    if (mbbY1)
+    {
+        *mbbY1 = no->my1;
+    }
+    if (mbbX2)
+    {
+        *mbbX2 = no->mx2;
+    }
+    if (mbbY2)
+    {
+        *mbbY2 = no->my2;
+    }
+    return no->info;
+}
+
+Node getNodeSRb(SRbTree t, double xa, double ya, double* mbbX1, double* mbbY1, double* mbbX2, double* mbbY2)
+{
+    tree* tre = t;
+    node* result = searchNode(tre->root, xa, ya);
+    if (result)
+    {
+        if (mbbX1)
+        {
+            *mbbX1 = result->mx1;
+        }
+        if (mbbY1)
+        {
+            *mbbY1 = result->my1;
+        }
+        if (mbbX2)
+        {
+            *mbbX2 = result->mx2;
+        }
+        if (mbbY2)
+        {
+            *mbbY2 = result->my2;
+        }
+        return result;
+    }
+    else
+    {
+        return NULL;
+    }
+}
+
+void updateInfoSRb(SRbTree t, Node n, Info i)
+{
+    node* no = n;
+    switch (getFormType(i)) // Make one function for each case, this function needs to be in forms.c and receive no->info and i as parameters
+    {
+        case CIRCLE:
+            break;
+        case RECTANGLE:
+            break;
+        case LINE:
+            break;
+        case TEXT:
+            break;
+        default:
+            break;
+    }
+}
+
 Info removeSRb(SRbTree t, double xa, double ya, double* mbbX1, double* mbbY1, double* mbbX2, double* mbbY2)
 {
     tree* tre = t;
