@@ -513,7 +513,10 @@ Info removeSRb(SRbTree t, double xa, double ya, double* mbbX1, double* mbbY1, do
         x = y->right;
         if (y->father == z)
         {
-            x->father = y;
+            if (x)
+            {
+                x->father = y;
+            }
         }
         else
         {
@@ -528,15 +531,15 @@ Info removeSRb(SRbTree t, double xa, double ya, double* mbbX1, double* mbbY1, do
     }
     if (yOriginalColor == 'b')
     {
-        deleteFixupSRb(t, x);
+        if (x)
+        {
+            deleteFixupSRb(t, x);
+        }
     }
 
-    // Doing right?????
-    printf("z->info: %d\n", getFormId(z->info));
     Info info = z->info;
-    free(z);
+    // free(z);
     tre->size--;
-    printf("info: %d\n", getFormId(info));
 
     return info;
 }
