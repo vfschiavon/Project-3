@@ -247,7 +247,7 @@ void readPrintGeo(SRbTree tree, void* paths)
 /*>>>>>>>>>>readQry<<<<<<<<<<*/
 void readQry(SRbTree tree, void* paths)
 {
-    char func[2];
+    char func[5];
 
     FILE* qry = fopen(getBedQry(paths), "r");
 
@@ -287,7 +287,7 @@ void readQry(SRbTree tree, void* paths)
                 }
                 strcpy(func, " ");
             }
-            fprintf(qrytxt, "\n>>End of report.");
+            fprintf(qrytxt, "\n>>End of report.\n");
             fclose(qrytxt);
             percursoProfundidade(tree, printSvg, qrysvg);
             fprintf(qrysvg, "</svg>\n");
