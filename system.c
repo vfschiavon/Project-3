@@ -271,19 +271,19 @@ void readQry(SRbTree tree, void* paths)
                 }
                 else if (!strcmp(func, "mv")) // Move
                 {
-                    //mv(tree, qry, qrytxt);
+                    mv(tree, qry, qrytxt);
                 }
                 else if (!strcmp(func, "lr")) // Launch net
                 {
-                    //lr(tree, qry, qrytxt, qrysvg);
+                    lr(tree, qry, qrytxt, qrysvg);
                 }
                 else if (!strcmp(func, "d")) // Shoot
                 {
-                    //d(tree, qry, qrytxt, qrysvg);
+                    d(tree, qry, qrytxt, qrysvg);
                 }
                 else if (!strcmp(func, "mc")) // Move shoal
                 {
-                    //mc(tree, qry, qrytxt);
+                    mc(tree, qry, qrytxt);
                 }
                 strcpy(func, " ");
             }
