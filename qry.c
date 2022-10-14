@@ -12,8 +12,11 @@ struct e
 void energize(Info i, double x, double y, double mbbX1, double mbbY1, double mbbX2, double mbbY2, void* aux)
 {
     struct e* e = aux;
-    fprintf(e->qrytxt, "Energized %s id %d with energy %.2lf\n", formTypeToString(getFormType(i)), getFormId(i), e->v);
-    setNauEnergy(i, e->v);
+    if (getFormType(i) == RECTANGLE)
+    {
+        fprintf(e->qrytxt, "Energized %s id %d with energy %.2lf\n", formTypeToString(getFormType(i)), getFormId(i), e->v);
+        setNauEnergy(i, e->v);
+    }
 }
 
 void e(SRbTree tree, FILE* qry, FILE* qrytxt)
