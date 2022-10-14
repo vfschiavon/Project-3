@@ -247,7 +247,7 @@ void readPrintGeo(SRbTree tree, void* paths)
 /*>>>>>>>>>>readQry<<<<<<<<<<*/
 void readQry(SRbTree tree, void* paths)
 {
-    char func[5];
+    char func[3];
 
     FILE* qry = fopen(getBedQry(paths), "r");
 
