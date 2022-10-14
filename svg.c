@@ -17,7 +17,7 @@ void printSvg(Info i, double x, double y, double mbbX1, double mbbY1, double mbb
             fprintf(svg, LINE_SVG, getFormId(i), getFormX(i), getFormY(i), getFormX2(i), getFormY2(i), getFormCorb(i));
             break;
         case TEXT:
-            fprintf(svg, TEXT_SVG, getFormId(i), getFormX(i), getFormY(i), getFormCorb(i), getFormCorp(i), defineAnchor(getFormA(i)), getFormTxto(i));
+            fprintf(svg, TEXT_SVG, getFormId(i), getFormX(i), getFormY(i), getFormCorb(i), getFormCorp(i), getFormA(i), getFormTxto(i));
             break;
         default:
             break;
