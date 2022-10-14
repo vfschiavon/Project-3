@@ -113,7 +113,7 @@ void percursoLargura(SRbTree t, FvisitaNo fVisita, void* aux); // ---------- TO 
 
 void percursoSimetrico(SRbTree t, FvisitaNo fVisita, void* aux); // ---------- TO DO ------------
 
-void percursoProfundidade(SRbTree t, FvisitaNo fVisita, void* aux); // ---------- TO DO ------------
+void percursoProfundidade(SRbTree t, FvisitaNo fVisita, void* aux);
 
 void killSRb(SRbTree t);
 /*

@@ -306,6 +306,20 @@ void recursivePrintEdge(node* currentnode, FILE* dot)
     recursivePrintEdge(currentnode->right, dot);
 }
 
+void recursiveProfundidade(node* currentnode, FvisitaNo fVisita, void* aux)
+{
+    if (currentnode)
+    {
+        fVisita(currentnode->info, currentnode->xa, currentnode->ya, currentnode->mx1, currentnode->mx2, currentnode->my1, currentnode->my2, aux);
+        recursiveProfundidade(currentnode->left, fVisita, aux);
+        recursiveProfundidade(currentnode->right, fVisita, aux);
+    }
+    else 
+    {
+        return;
+    }
+}
+
 void recursiveFree(void* currentnode)
 {
     node* n = currentnode;
@@ -537,6 +551,12 @@ void printSRb(SRbTree t, char* nomeArq)
         printf("Error opening the .dot file.\n");
         exit(EXIT_FAILURE);
     }
+}
+
+void percursoProfundidade(SRbTree t, FvisitaNo fVisita, void* aux)
+{
+    tree* tre = t;
+    recursiveProfundidade(tre->root, fVisita, aux);
 }
 
 void killSRb(SRbTree t)
