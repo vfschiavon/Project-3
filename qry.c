@@ -112,17 +112,24 @@ void mv(SRbTree tree, FILE* qry, FILE* qrytxt)
 /* Functions and structs for LR */
 void lr(SRbTree tree, FILE* qry, FILE* qrytxt, FILE* qrysvg)
 {
-
+    int id;
+    char* lado;
+    double d, w, h;
+    fscanf(qry, "%d %s %lf %lf %lf", &id, lado, &d, &w, &h);
 }
 
 /* Functions and structs for D */
 void d(SRbTree tree, FILE* qry, FILE* qrytxt, FILE* qrysvg)
 {
-
+    int id;
+    double d;
+    char* lado;
+    fscanf(qry, "%d %s %lf", &id, lado, &d);
 }
 
 /* Functions and structs for MC */
 void mc(SRbTree tree, FILE* qry, FILE* qrytxt)
 {
-
+    double dx, dy, x, y, w, h;
+    fscanf(qry, "%lf %lf %lf %lf %lf %lf", &dx, &dy, &x, &y, &w, &h);
 }
