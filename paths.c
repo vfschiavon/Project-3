@@ -35,8 +35,10 @@ void freeAllPaths(void* aptofree)
     free(ap->qryarq);
     free(ap->qryname);
     free(ap->bsdgeosvg);
+    free(ap->bsdgeodot);
     free(ap->bsdgeoqrysvg);
     free(ap->bsdgeoqrytxt);
+    free(ap->bsdgeoqrydot);
     free(ap);
 }
 
