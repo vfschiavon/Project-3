@@ -17,10 +17,10 @@ int main(int argc, char** argv)
 
     readPrintGeo(tree, paths);
 
-    // if (getQryArq(paths))
-    // {
-    //     readQry(tree, paths);
-    // }
+    if (getQryArq(paths))
+    {
+        readQry(tree, paths);
+    }
     
     killSRb(tree);
     freeAllPaths(paths);
