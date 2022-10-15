@@ -55,6 +55,10 @@ int getFormType(void* formtoget);
 
 int getFormId(void* formtoget);
 
+double getNauEnergy(void* formtoget);
+
+double getNauBalance(void* formtoget);
+
 double getFormX(void* formtoget);
 
 double getFormX2(void* formtoget);

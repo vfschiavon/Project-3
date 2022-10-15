@@ -214,6 +214,26 @@ int getFormId(void* formtoget)
     return f->id;
 }
 
+double getNauEnergy(void* formtoget)
+{
+    form* f = formtoget;
+    if (f->type == RECTANGLE)
+    {
+        return f->energy;
+    }
+    return 0;
+}
+
+double getNauBalance(void* formtoget)
+{
+    form* f = formtoget;
+    if (f->type == RECTANGLE)
+    {
+        return f->balance;
+    }
+    return 0;
+}
+
 double getFormX(void* formtoget)
 {
     form* f = formtoget;
