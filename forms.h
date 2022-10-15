@@ -31,7 +31,7 @@ void setFullRect(void* formtoset, int id, double x, double y, double w, double h
 
 void setFullLine(void* formtoset, int id, double x, double y, double x2, double y2, char* corb);
 
-void setFullText(void* formtoset, int id, double x, double y, char* corb, char a, char* txto);
+void setFullText(void* formtoset, int id, double x, double y, char* corb, char* a, char* txto);
 
 void setNauEnergy(void* formtoset, double energy);
 

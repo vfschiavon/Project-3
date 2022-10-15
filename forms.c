@@ -134,7 +134,7 @@ void setFullLine(void* formtoset, int id, double x, double y, double x2, double 
     strcpy(f->corb, corb);
 }
 
-void setFullText(void* formtoset, int id, double x, double y, char* corb, char a, char* txto)
+void setFullText(void* formtoset, int id, double x, double y, char* corb, char* a, char* txto)
 {
     form* f = formtoset;
     f->type = TEXT;
@@ -142,7 +142,7 @@ void setFullText(void* formtoset, int id, double x, double y, char* corb, char a
     f->x = x;
     f->y = y;
     strcpy(f->corb, corb);
-    strcpy(f->a, defineAnchor(a));
+    strcpy(f->a, a);
     strcpy(f->txto, txto);
 }
 
