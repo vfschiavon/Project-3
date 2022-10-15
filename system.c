@@ -190,7 +190,7 @@ void savePrintText(SRbTree tree, FILE* geo, FILE* svg)
     char corb[20], corp[20], a, txto[100];
     void* newform = createForm();
     fscanf(geo, "%d %lf %lf %s %s %c %[^\n]s", &id, &x, &y, corb, corp, &a, txto);
-    setFullText(newform, id, x, y, corb, a, txto);
+    setFullText(newform, id, x, y, corb, defineAnchor(a), txto);
     insertSRb(tree, x, y, x, y, x, y, newform);
     fprintf(svg, TEXT_SVG, id, x, y, corb, corp, defineAnchor(a), txto);
 }
