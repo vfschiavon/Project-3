@@ -562,15 +562,15 @@ Info removeSRb(SRbTree t, double xa, double ya, double* mbbX1, double* mbbY1, do
     tre->size--;
 
     // Method 1: create copy than free original
-    void* formToReturn = createSubstitute(z->info);
-    free(z->info);
-    free(z);
-    return formToReturn;
+    // void* formToReturn = createSubstitute(z->info);
+    // free(z->info);
+    // free(z);
+    // return formToReturn;
 
     // Method 2: save original->info than free original --- these one leaks memory
-    // Info info = z->info;
+    Info info = z->info;
     // free(z);
-    // return info;
+    return info;
 }
 
 void printSRb(SRbTree t, char* nomeArq)
