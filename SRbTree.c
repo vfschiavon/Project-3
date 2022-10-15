@@ -39,53 +39,67 @@ typedef struct tree
 void leftRotate(SRbTree t, node* x)
 {
     node* y = x->right;
-    x->right = y->left;
-    if (y->left)
+    x->right = NULL;
+    if (y)
     {
-        y->left->father = x;
+        if (y->left)
+        {
+            x->right = y->left;
+        }
+        if (y->left)
+        {
+            y->left->father = x;
+        }
+        y->father = x->father;
+        if (!x->father)
+        {
+            tree* tre = t;
+            tre->root = y;
+        }
+        else if (x == x->father->left)
+        {
+            x->father->left = y;
+        }
+        else
+        {
+            x->father->right = y;
+        }
+        y->left = x;
+        x->father = y;
     }
-    y->father = x->father;
-    if (!x->father)
-    {
-        tree* tre = t;
-        tre->root = y;
-    }
-    else if (x == x->father->left)
-    {
-        x->father->left = y;
-    }
-    else
-    {
-        x->father->right = y;
-    }
-    y->left = x;
-    x->father = y;
 }
 
 void rightRotate(SRbTree t, node* x)
 {
     node* y = x->left;
-    x->left = y->right;
-    if (y->right)
+    x->left = NULL;
+    if (y)
     {
-        y->right->father = x;
+        if (y->right)
+        {
+            x->left = y->right;
+        }
+        if (y->right)
+        {
+            y->right->father = x;
+        }
+        y->father = x->father;
+        if (!x->father)
+        {
+            tree* tre = t;
+            tre->root = y;
+        }
+        else if (x == x->father->right)
+        {
+            x->father->right = y;
+        }
+        else
+        {
+            x->father->left = y;
+        }
+        y->right = x;
+        x->father = y;
     }
-    y->father = x->father;
-    if (!x->father)
-    {
-        tree* tre = t;
-        tre->root = y;
-    }
-    else if (x == x->father->right)
-    {
-        x->father->right = y;
-    }
-    else
-    {
-        x->father->left = y;
-    }
-    y->right = x;
-    x->father = y;
 }   
 
 void fixupSRb(SRbTree t, node* pZ)
@@ -216,23 +230,29 @@ void deleteFixupSRb(tree* t, node* x)
                 leftRotate(t, x->father);
                 w = x->father->right;
             }
-            if (w->left->color == 'b' && w->right->color == 'b')
+            if (w->left && w->left->color == 'b' && w->right && w->right->color == 'b')
             {
                 w->color = 'r';
                 x = x->father;
             }
             else
             {
-                if (w->right->color == 'b')
+                if (w->right && w->right->color == 'b')
                 {
-                    w->left->color = 'b';
+                    if (w->left)
+                    {
+                        w->left->color = 'b';
+                    }
                     w->color = 'r';
                     rightRotate(t, w);
                     w = x->father->right;
                 }
                 w->color = x->father->color;
                 x->father->color = 'b';
-                w->right->color = 'b';
+                if (w->right)
+                {
+                    w->right->color = 'b';
+                }
                 leftRotate(t, x->father);
                 x = t->root;
             }
@@ -240,30 +260,36 @@ void deleteFixupSRb(tree* t, node* x)
         else
         {
             w = x->father->left;
-            if (w->color == 'r')
+            if (w && w->color == 'r')
             {
                 w->color = 'b';
                 x->father->color = 'r';
                 rightRotate(t, x->father);
                 w = x->father->left;
             }
-            if (w->right->color == 'b' && w->left->color == 'b')
+            if (w && w->right && w->right->color == 'b' && w->left && w->left->color == 'b')
             {
                 w->color = 'r';
                 x = x->father;
             }
             else
             {
-                if (w->left->color == 'b')
+                if (w && w->left && w->left->color == 'b')
                 {
                     w->right->color = 'b';
                     w->color = 'r';
                     leftRotate(t, w);
                     w = x->father->left;
                 }
-                w->color = x->father->color;
+                if (w)
+                {
+                    w->color = x->father->color;
+                }
                 x->father->color = 'b';
-                w->left->color = 'b';
+                if (w && w->left)
+                {
+                    w->left->color = 'b';
+                }
                 rightRotate(t, x->father);
                 x = t->root;
             }
