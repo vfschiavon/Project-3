@@ -272,6 +272,29 @@ void deleteFixupSRb(tree* t, node* x)
     x->color = 'b';
 }
 
+Info createSubstitute(Info original)
+{
+    void* copy = createForm();
+    switch (getFormType(original))
+    {
+        case CIRCLE:
+            setFullCirc(copy, getFormId(original), getFormX(original), getFormY(original), getFormR(original), getFormCorb(original), getFormCorp(original));
+            break;
+        case RECTANGLE:
+            setFullRect(copy, getFormId(original), getFormX(original), getFormY(original), getFormW(original), getFormH(original), getFormCorb(original), getFormCorp(original));
+            break;
+        case LINE:
+            setFullLine(copy, getFormId(original), getFormX(original), getFormY(original), getFormX2(original), getFormY2(original), getFormCorb(original));
+            break;
+        case TEXT:
+            setFullText(copy, getFormId(original), getFormX(original), getFormY(original), getFormCorb(original), getFormA(original), getFormTxto(original));
+            break;
+        default:
+            break;
+    }
+    return copy;
+}
+
 void recursivePrintNode(node* currentnode, FILE* dot)
 {
     if (currentnode)
@@ -536,12 +559,18 @@ Info removeSRb(SRbTree t, double xa, double ya, double* mbbX1, double* mbbY1, do
             deleteFixupSRb(t, x);
         }
     }
-
-    Info info = z->info;
-    // free(z);
     tre->size--;
 
-    return info;
+    // Method 1: create copy than free original
+    void* formToReturn = createSubstitute(z->info);
+    free(z->info);
+    free(z);
+    return formToReturn;
+
+    // Method 2: save original->info than free original --- these one leaks memory
+    // Info info = z->info;
+    // free(z);
+    // return info;
 }
 
 void printSRb(SRbTree t, char* nomeArq)
