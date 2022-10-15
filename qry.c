@@ -49,23 +49,6 @@ void searchId(Info i, double x, double y, double mbbX1, double mbbY1, double mbb
     }
 }
 
-void updateEnergyByMove(Info i, void* aux)
-{
-    struct mv* mv = aux;
-    if (mv->dx == 0)
-    {
-        setNauEnergy(i, getNauEnergy(i) - (mv->dy / 5));
-    }
-    else if (mv->dy == 0)
-    {
-        setNauEnergy(i, getNauEnergy(i) - (mv->dx / 5));
-    }
-    else
-    {
-        setNauEnergy(i, getNauEnergy(i) - (sqrt(pow(mv->dx, 2) + pow(mv->dy, 2)) / 5));
-    }
-}
-
 void moveMV(Info i, void* aux)
 {
     struct mv* mv = aux;
@@ -93,6 +76,7 @@ void moveMV(Info i, void* aux)
             fprintf(mv->qrytxt, "Moved %s id %d from (%.2lf, %.2lf) to (%.2lf, %.2lf)\n", formTypeToString(getFormType(tempInfo)), getFormId(tempInfo), getFormX(tempInfo) - mv->dx, getFormY(tempInfo) - mv->dy, getFormX(tempInfo), getFormY(tempInfo));
             break;
         case RECTANGLE:
+            setNauEnergy(tempInfo, getNauEnergy(tempInfo) - (sqrt(pow(mv->dx, 2) + pow(mv->dy, 2)) / 5));
             updateEnergyByMove(tempInfo, mv);
             insertSRb(mv->tree, getFormX(tempInfo), getFormY(tempInfo), getFormX(tempInfo), getFormY(tempInfo), getFormX(tempInfo) + getFormW(tempInfo), getFormY(tempInfo) + getFormH(tempInfo), tempInfo);
             fprintf(mv->qrytxt, "Moved %s id %d from (%.2lf, %.2lf) to (%.2lf, %.2lf)\n", formTypeToString(getFormType(tempInfo)), getFormId(tempInfo), getFormX(tempInfo) - mv->dx, getFormY(tempInfo) - mv->dy, getFormX(tempInfo), getFormY(tempInfo));
