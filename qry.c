@@ -77,7 +77,6 @@ void moveMV(Info i, void* aux)
             break;
         case RECTANGLE:
             setNauEnergy(tempInfo, getNauEnergy(tempInfo) - (sqrt(pow(mv->dx, 2) + pow(mv->dy, 2)) / 5));
-            updateEnergyByMove(tempInfo, mv);
             insertSRb(mv->tree, getFormX(tempInfo), getFormY(tempInfo), getFormX(tempInfo), getFormY(tempInfo), getFormX(tempInfo) + getFormW(tempInfo), getFormY(tempInfo) + getFormH(tempInfo), tempInfo);
             fprintf(mv->qrytxt, "Moved %s id %d from (%.2lf, %.2lf) to (%.2lf, %.2lf)\n", formTypeToString(getFormType(tempInfo)), getFormId(tempInfo), getFormX(tempInfo) - mv->dx, getFormY(tempInfo) - mv->dy, getFormX(tempInfo), getFormY(tempInfo));
             break;
