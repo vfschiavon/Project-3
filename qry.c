@@ -49,7 +49,7 @@ void searchId(Info i, double x, double y, double mbbX1, double mbbY1, double mbb
     }
 }
 
-void move(Info i, void* aux)
+void moveMV(Info i, void* aux)
 {
     struct mv* mv = aux;
     void* tempInfo = NULL;
@@ -104,7 +104,7 @@ void mv(SRbTree tree, FILE* qry, FILE* qrytxt)
     percursoProfundidade(tree, searchId, aux);
     if (aux->info)
     {
-        move(aux->info, aux);
+        moveMV(aux->info, aux);
     }
     free(aux);
 }
@@ -128,8 +128,82 @@ void d(SRbTree tree, FILE* qry, FILE* qrytxt, FILE* qrysvg)
 }
 
 /* Functions and structs for MC */
+struct mc
+{
+    double dx;
+    double dy;
+    double x;
+    double y;
+    double w;
+    double h;
+    void* tree;
+    FILE* qrytxt;
+};
+
+void moveMC(Info i, void* aux)
+{
+    struct mc* mc = aux;
+    void* tempInfo = NULL;
+    if (getFormType(i) != LINE)
+    {
+        tempInfo = removeSRb(mc->tree, getFormX(i), getFormY(i), 0, 0, 0, 0);
+        setFormX(tempInfo, getFormX(tempInfo) + mc->dx);
+        setFormY(tempInfo, getFormY(tempInfo) + mc->dy);
+    }
+    else
+    {
+        double xanchor, yanchor;
+        defineLineAnchor(&xanchor, &yanchor, getFormX(i), getFormY(i), getFormX2(i), getFormY2(i));
+        tempInfo = removeSRb(mc->tree, xanchor, yanchor, 0, 0, 0, 0);
+        setFormX(tempInfo, getFormX(tempInfo) + mc->dx);
+        setFormY(tempInfo, getFormY(tempInfo) + mc->dy);
+        setFormX2(tempInfo, getFormX2(tempInfo) + mc->dx);
+        setFormY2(tempInfo, getFormY2(tempInfo) + mc->dy);
+    }
+    switch (getFormType(tempInfo))
+    {
+        case CIRCLE:
+            insertSRb(mc->tree, getFormX(tempInfo), getFormY(tempInfo), getFormX(tempInfo) - getFormR(tempInfo), getFormY(tempInfo) - getFormR(tempInfo), getFormX(tempInfo) + getFormR(tempInfo), getFormY(tempInfo) + getFormR(tempInfo), tempInfo);
+            fprintf(mc->qrytxt, "Moved %s id %d from (%.2lf, %.2lf) to (%.2lf, %.2lf)\n", formTypeToString(getFormType(tempInfo)), getFormId(tempInfo), getFormX(tempInfo) - mc->dx, getFormY(tempInfo) - mc->dy, getFormX(tempInfo), getFormY(tempInfo));
+            break;
+        case RECTANGLE:
+            insertSRb(mc->tree, getFormX(tempInfo), getFormY(tempInfo), getFormX(tempInfo), getFormY(tempInfo), getFormX(tempInfo) + getFormW(tempInfo), getFormY(tempInfo) + getFormH(tempInfo), tempInfo);
+            fprintf(mc->qrytxt, "Moved %s id %d from (%.2lf, %.2lf) to (%.2lf, %.2lf)\n", formTypeToString(getFormType(tempInfo)), getFormId(tempInfo), getFormX(tempInfo) - mc->dx, getFormY(tempInfo) - mc->dy, getFormX(tempInfo), getFormY(tempInfo));
+            break;
+        case LINE:;
+            double xanchor, yanchor;
+            defineLineAnchor(&xanchor, &yanchor, getFormX(tempInfo), getFormY(tempInfo), getFormX2(tempInfo), getFormY2(tempInfo));
+            insertSRb(mc->tree, xanchor, yanchor, xanchor, yanchor, xanchor + fabs(getFormX2(tempInfo) - getFormX(tempInfo)), yanchor + fabs(getFormY2(tempInfo) - getFormY(tempInfo)), tempInfo);
+            fprintf(mc->qrytxt, "Moved %s id %d from (%.2lf, %.2lf, %.2lf, %.2lf) to (%.2lf, %.2lf, %.2lf, %.2lf)\n", formTypeToString(getFormType(tempInfo)), getFormId(tempInfo), getFormX(tempInfo) - mc->dx, getFormY(tempInfo) - mc->dy, getFormX2(tempInfo) - mc->dx, getFormY2(tempInfo) - mc->dy, getFormX(tempInfo), getFormY(tempInfo), getFormX2(tempInfo), getFormY2(tempInfo));
+            break;
+        case TEXT:
+            insertSRb(mc->tree, getFormX(tempInfo), getFormY(tempInfo), getFormX(tempInfo), getFormY(tempInfo), getFormX(tempInfo), getFormY(tempInfo), tempInfo);
+            fprintf(mc->qrytxt, "Moved %s id %d from (%.2lf, %.2lf) to (%.2lf, %.2lf)\n", formTypeToString(getFormType(tempInfo)), getFormId(tempInfo), getFormX(tempInfo) - mc->dx, getFormY(tempInfo) - mc->dy, getFormX(tempInfo), getFormY(tempInfo));
+            break;
+        default:
+            break;
+    }
+}
+
+void verifyInside(Info i, double x, double y, double mbbX1, double mbbY1, double mbbX2, double mbbY2, void* aux)
+{
+    struct mc* mc = aux;
+    if (formFullInside(i, mc->x, mc->y, mc->x + mc->w, mc->y + mc->h))
+    {
+        if (getFormType(i) == CIRCLE)
+        {
+            moveMC(i, aux);
+        }
+    }
+}
+
 void mc(SRbTree tree, FILE* qry, FILE* qrytxt)
 {
-    double dx, dy, x, y, w, h;
-    fscanf(qry, "%lf %lf %lf %lf %lf %lf", &dx, &dy, &x, &y, &w, &h);
+    struct mc* aux = calloc(1, sizeof(struct mc));
+    aux->tree = tree;
+    aux->qrytxt = qrytxt;
+    fscanf(qry, "%lf %lf %lf %lf %lf %lf", &aux->dx, &aux->dy, &aux->x, &aux->y, &aux->w, &aux->h);
+    fprintf(qrytxt, "\n>Moving forms inside rectangle (%.2lf, %.2lf, %.2lf, %.2lf) by (%.2lf, %.2lf):\n", aux->x, aux->y, aux->w, aux->h, aux->dx, aux->dy);
+    percursoProfundidade(tree, verifyInside, aux);
+    free(aux);
 }
