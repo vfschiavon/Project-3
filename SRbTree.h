@@ -67,7 +67,7 @@ void getBbPartSRb(SRbTree t, double x, double y, double w, double h, Lista resul
  * interseccao com a regiao retangula de ancora (x,y), largura w e altura h.
  */
 
-void getBbSRb(SRbTree t, double x, double y, double w, double h, Lista resultado); // ---------- TO DO ------------
+void getBbSRb(SRbTree t, double x, double y, double w, double h, Lista resultado);
 /*
  * Similar a getBbPartSRb, porem seleciona apenas os nos cujos retangulos envolventes estejam
  * inteiramente dentro da regiao.

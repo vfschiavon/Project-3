@@ -160,6 +160,22 @@ void fixupSRb(SRbTree t, node* pZ)
     tre->root->color = 'b';
 }
 
+void recursiveGetBbSRb(node* currentnode, double x, double y, double w, double h, Lista resultado)
+{
+    if (currentnode)
+    {
+        if (currentnode->mx1 >= x && currentnode->mx2 <= x + w && currentnode->my1 >= y && currentnode->my2 <= y + h)
+        {
+            insertAtTail(resultado, currentnode->info);
+        }
+        if (currentnode->submx1 >= x && currentnode->submx1 <= x + w && currentnode->submy1 >= y && currentnode->submy1 <= y + h)
+        {
+            recursiveGetBbSRb(currentnode->left, x, y, w, h, resultado);
+            recursiveGetBbSRb(currentnode->right, x, y, w, h, resultado);
+        }
+    }
+}
+
 node* searchNode(node* currentnode, double pXa, double pYa)
 {
     node* result = NULL;
@@ -498,6 +514,15 @@ Node insertSRb(SRbTree t, double x, double y, double mbbX1, double mbbY1, double
 Node insertBbSRb(SRbTree t, double mbbX1, double mbbY1, double mbbX2, double mbbY2, Info info)
 {
     return insertSRb(t, mbbX1, mbbY1,  mbbX1, mbbY1,  mbbX2, mbbY2,  info);
+}
+
+void getBbSRb(SRbTree t, double x, double y, double w, double h, Lista resultado)
+{
+    tree* tre = t;
+    if (tre->root)
+    {
+        recursiveGetBbSRb(tre->root, x, y, w, h, resultado);
+    }
 }
 
 Info getInfoSRb(SRbTree t, Node n, double* xa, double* ya, double* mbbX1, double* mbbY1, double* mbbX2, double* mbbY2)
