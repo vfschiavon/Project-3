@@ -159,21 +159,17 @@ void verifyNet(Info i, double x, double y, double mbbX1, double mbbY1, double mb
             {
                 fprintf(lr->qrytxt, "Captured fish %d (%.2lf, %.2lf) worth M$ 5,00\n", getFormId(i), x, y);
                 lr->total += 5;
-                setNauBalance(i, getNauBalance(i) + 5);
             }
             else if (getFormType(i) == LINE)
             {
                 fprintf(lr->qrytxt, "Captured shrimp %d (%.2lf, %.2lf, %.2lf, %.2lf) worth M$ 1,00\n", getFormId(i), getFormX(i), getFormY(i), getFormX2(i), getFormY2(i));
                 lr->total += 1;
-                setNauBalance(i, getNauBalance(i) + 1);
             }
             else
             {
                 if (!strcmp(getFormTxto(i), ">-|-<"))
                 {
                     fprintf(lr->qrytxt, "Captured lobster %d (%.2lf, %.2lf) worth M$ 20,00\n", getFormId(i), x, y);
-                    lr->total += 20;
-                    setNauBalance(i, getNauBalance(i) + 20);
                 }
                 else if (!strcmp(getFormTxto(i), "$"))
                 {
@@ -209,6 +205,7 @@ double throwNet(Info i, char* side, double d, double w, double h, void* tree, FI
             fprintf(qrytxt, "Net thrown at (%.2lf, %.2lf, %.2lf, %.2lf)\n", throwX, throwY, w, h);
             fprintf(qrysvg, RECT_SVG, -1, throwX, throwY, w, h, "black", "none");
             percursoProfundidade(tree, verifyNet, aux);
+            setNauBalance(i, getNauBalance(i) + aux->total);
             if (!aux->captured)
             {
                 fprintf(qrytxt, "Didn't capture anything.\n");
