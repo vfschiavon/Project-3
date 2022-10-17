@@ -76,21 +76,22 @@ void defineLineAnchor(double* xref, double* yref, double x1, double y1, double x
 char* formTypeToString(int type)
 {
     char* typeString;
-    if (type == CIRCLE)
+    switch(type)
     {
-        typeString = "circle";
-    }
-    else if (type == RECTANGLE)
-    {
-        typeString = "rectangle";
-    }
-    else if (type == LINE)
-    {
-        typeString = "line";
-    }
-    else if (type == TEXT)
-    {
-        typeString = "text";
+        case CIRCLE:
+            typeString = "fish";
+            break;
+        case RECTANGLE:
+            typeString = "ship";
+            break;
+        case LINE:
+            typeString = "shrimp";
+            break;
+        case TEXT:
+            typeString = "lobster or coin or algae or debris";
+            break;
+        default:
+            break;
     }
     return typeString;
 }
