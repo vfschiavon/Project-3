@@ -82,7 +82,7 @@ char* formTypeToString(int type)
             typeString = "fish";
             break;
         case RECTANGLE:
-            typeString = "ship";
+            typeString = "boat";
             break;
         case LINE:
             typeString = "shrimp";
