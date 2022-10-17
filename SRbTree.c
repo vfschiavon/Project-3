@@ -199,29 +199,32 @@ void recursiveGetBbSRb(node* currentnode, double x, double y, double w, double h
     }
 }
 
-node* searchNode(node* currentnode, double pXa, double pYa)
+node* searchNode(node* currentnode, double pXa, double pYa, double epsilon)
 {
-    node* result = NULL;
     if (currentnode)
     {
-        if (currentnode->xa == pXa && currentnode->ya == pYa) // Colocar condicionais para descida (poda) e adicionar fabs() com epsilon
+        node* result = NULL;
+        if (fabs(currentnode->xa - pXa) <= epsilon && fabs(currentnode->ya - pYa) <= epsilon)
         {
             result = currentnode;
         }
         else
         {
-            result = searchNode(currentnode->left, pXa, pYa);
-            if (!result)
+            if (pXa < currentnode->xa || (pXa == currentnode->xa && pYa < currentnode->ya))
             {
-                result = searchNode(currentnode->right, pXa, pYa);
+                result = searchNode(currentnode->left, pXa, pYa, epsilon);
+            }
+            else
+            {
+                result = searchNode(currentnode->right, pXa, pYa, epsilon);
             }
         }
+        return result;
     }
     else
     {
         return NULL;
     }
-    return result;
 }
 
 void transplantSRb(SRbTree t, node* u, node* v)
@@ -590,7 +593,7 @@ Info getInfoSRb(SRbTree t, Node n, double* xa, double* ya, double* mbbX1, double
 Node getNodeSRb(SRbTree t, double xa, double ya, double* mbbX1, double* mbbY1, double* mbbX2, double* mbbY2)
 {
     tree* tre = t;
-    node* result = searchNode(tre->root, xa, ya);
+    node* result = searchNode(tre->root, xa, ya, tre->epsilon);
     if (result)
     {
         if (mbbX1)
@@ -632,7 +635,7 @@ void updateInfoSRb(SRbTree t, Node n, Info i)
 Info removeSRb(SRbTree t, double xa, double ya, double* mbbX1, double* mbbY1, double* mbbX2, double* mbbY2)
 {
     tree* tre = t;
-    node* z = searchNode(tre->root, xa, ya);
+    node* z = searchNode(tre->root, xa, ya, tre->epsilon);
     node* y = z;
     node* x = NULL;
     char yOriginalColor = y->color;
