@@ -356,17 +356,38 @@ void recursivePrintEdge(node* currentnode, FILE* dot)
     recursivePrintEdge(currentnode->right, dot);
 }
 
-void recursiveProfundidade(node* currentnode, FvisitaNo fVisita, void* aux)
+int findHeight(node* n)
 {
-    if (currentnode)
+    if (!n)
     {
-        fVisita(currentnode->info, currentnode->xa, currentnode->ya, currentnode->mx1, currentnode->mx2, currentnode->my1, currentnode->my2, aux);
-        recursiveProfundidade(currentnode->left, fVisita, aux);
-        recursiveProfundidade(currentnode->right, fVisita, aux);
+        return 0;
     }
-    else 
+    int left = findHeight(n->left);
+    int right = findHeight(n->right);
+    if (left > right)
+    {
+        return left + 1;
+    }
+    else
+    {
+        return right + 1;
+    }
+}
+
+void levelOrder(node* n, int level, FvisitaNo fVisita, void* aux)
+{
+    if (!n)
     {
         return;
+    }
+    if (level == 1)
+    {
+        fVisita(n->info, n->xa, n->ya, n->mx1, n->mx2, n->my1, n->my2, aux);
+    }
+    else if (level > 1)
+    {
+        levelOrder(n->left, level - 1, fVisita, aux);
+        levelOrder(n->right, level - 1, fVisita, aux);
     }
 }
 
@@ -377,6 +398,20 @@ void recursiveSimetrico(node* currentnode, FvisitaNo fVisita, void* aux)
         recursiveSimetrico(currentnode->left, fVisita, aux);
         fVisita(currentnode->info, currentnode->xa, currentnode->ya, currentnode->mx1, currentnode->mx2, currentnode->my1, currentnode->my2, aux);
         recursiveSimetrico(currentnode->right, fVisita, aux);
+    }
+    else 
+    {
+        return;
+    }
+}
+
+void recursiveProfundidade(node* currentnode, FvisitaNo fVisita, void* aux)
+{
+    if (currentnode)
+    {
+        fVisita(currentnode->info, currentnode->xa, currentnode->ya, currentnode->mx1, currentnode->mx2, currentnode->my1, currentnode->my2, aux);
+        recursiveProfundidade(currentnode->left, fVisita, aux);
+        recursiveProfundidade(currentnode->right, fVisita, aux);
     }
     else 
     {
@@ -623,6 +658,16 @@ void printSRb(SRbTree t, char* nomeArq)
     {
         printf("Error opening the .dot file.\n");
         exit(EXIT_FAILURE);
+    }
+}
+
+void percursoLargura(SRbTree t, FvisitaNo fVisita, void* aux)
+{
+    tree* tre = t;
+    int h = findHeight(tre->root);
+    for (int i = 0; i <= h; i++)
+    {
+        levelOrder(tre->root, i, fVisita, aux);
     }
 }
 

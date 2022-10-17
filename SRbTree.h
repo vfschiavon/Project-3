@@ -109,7 +109,7 @@ void printSRb(SRbTree t, char* nomeArq);
  * Invoca a funcao fVisita (veja descricao acima) em cada no� visitado
  */
 
-void percursoLargura(SRbTree t, FvisitaNo fVisita, void* aux); // ---------- TO DO ------------
+void percursoLargura(SRbTree t, FvisitaNo fVisita, void* aux);
 
 void percursoSimetrico(SRbTree t, FvisitaNo fVisita, void* aux);
 
