@@ -9,7 +9,7 @@ void e(SRbTree tree, FILE* qry, FILE* qrytxt);
 
 void mv(SRbTree tree, FILE* qry, FILE* qrytxt);
 
-void lr(SRbTree tree, FILE* qry, FILE* qrytxt, FILE* qrysvg);
+double lr(SRbTree tree, FILE* qry, FILE* qrytxt, FILE* qrysvg);
 
 void d(SRbTree tree, FILE* qry, FILE* qrytxt, FILE* qrysvg);
 
