@@ -259,6 +259,7 @@ void readQry(SRbTree tree, void* paths)
 
         if (qrytxt && qrysvg)
         {
+            double absTotal = 0;
             fprintf(qrytxt, ">>Start of pirate fishing:\n");
 
             while (!feof(qry))
@@ -275,7 +276,7 @@ void readQry(SRbTree tree, void* paths)
                 }
                 else if (!strcmp(func, "lr")) // Launch net
                 {
-                    lr(tree, qry, qrytxt, qrysvg);
+                    absTotal += lr(tree, qry, qrytxt, qrysvg);
                 }
                 else if (!strcmp(func, "d")) // Shoot
                 {
@@ -287,6 +288,7 @@ void readQry(SRbTree tree, void* paths)
                 }
                 strcpy(func, " ");
             }
+            fprintf(qrytxt, "\n>Sum of all captures: M$ %.2lf\n", absTotal);
             void* files[2] = {qrytxt, qrysvg};
             fprintf(qrytxt, "\n>Results:\n");
             percursoProfundidade(tree, printSvg, files);
