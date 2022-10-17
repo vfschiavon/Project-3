@@ -289,7 +289,7 @@ void shotHit(Info i, double x, double y, double mbbX1, double mbbY1, double mbbX
             fprintf(d->qrytxt, "Shot hit boat %d (%.2lf, %.2lf, %.2lf, %.2lf)\n", getFormId(i), x, y, getFormW(i), getFormH(i));
             fprintf(d->qrytxt, "The attacking boat captured M$ %.2lf from this destroyed boat.\n", getNauBalance(i));
             setNauBalance(d->shooter, getNauBalance(d->shooter) + getNauBalance(i));
-            removeSRb(d->tree, x, y, 0, 0, 0, 0);
+            free(removeSRb(d->tree, x, y, 0, 0, 0, 0));
         }
     }
 }
