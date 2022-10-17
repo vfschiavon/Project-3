@@ -122,6 +122,10 @@ void mv(SRbTree tree, FILE* qry, FILE* qrytxt)
     {
         moveMV(pArray[1], dx, dy, tree, qrytxt);
     }
+    else
+    {
+        fprintf(qrytxt, "Object %d not found.\n", id);
+    }
 }
 
 /* Functions and structs for LR */
@@ -147,22 +151,19 @@ void lr(SRbTree tree, FILE* qry, FILE* qrytxt, FILE* qrysvg)
     aux->hit = false;
     fscanf(qry, "%d %s %lf %lf %lf", &aux->id, aux->side, &aux->d, &aux->w, &aux->h);
     fprintf(qrytxt, "\n>The ship %d will throw a net in the %s side with a distance of %.2lf, width of %.2lf and height of %.2lf:\n", aux->id, aux->side, aux->d, aux->w, aux->h);
-    percursoProfundidade(tree, searchId, aux);
+    // percursoProfundidade(tree, searchId, aux);
     free(aux);
 }
 
 /* Functions and structs for D */
 struct d
 {
-    int id;
-    char side[3];
-    double d;
     double shootX;
     double shootY;
     bool hit;
+    void* shooter;
     void* tree;
     FILE* qrytxt;
-    FILE* qrysvg;
 };
 
 void shotHit(Info i, double x, double y, double mbbX1, double mbbY1, double mbbX2, double mbbY2, void* aux)
@@ -174,49 +175,61 @@ void shotHit(Info i, double x, double y, double mbbX1, double mbbY1, double mbbX
         {
             d->hit = true;
             fprintf(d->qrytxt, "Shot hit ship %d (%.2lf, %.2lf, %.2lf, %.2lf)\n", getFormId(i), x, y, getFormW(i), getFormH(i));
+            fprintf(d->qrytxt, "The attacking ship captured M$ %.2lf from this destroyed ship.\n", getNauBalance(i));
+            setNauBalance(d->shooter, getNauBalance(d->shooter) + getNauBalance(i));
             removeSRb(d->tree, x, y, 0, 0, 0, 0);
         }
     }
 }
 
-void shoot(Info i, double x, double y, double mbbX1, double mbbY1, double mbbX2, double mbbY2, void* aux)
+void shoot(Info i, char* side, double d, void* tree, FILE* qrytxt, FILE* qrysvg)
 {
-    struct d* d = aux;
-    if (getFormId(i) == d->id)
+    if (getFormType(i) == RECTANGLE)
     {
-        if (getFormType(i) == RECTANGLE)
+        if (getNauEnergy(i) >= d)
         {
-            if (getNauEnergy(i) >= d->d)
+            double shootX, shootY;
+            struct d* aux = calloc(1, sizeof(struct d));
+            aux->shooter = i;
+            aux->tree = tree;
+            aux->qrytxt = qrytxt;
+            setNauEnergy(i, getNauEnergy(i) - d);
+            calculatePos(side, d, getFormX(i), getFormY(i), getFormW(i), getFormH(i), &shootX, &shootY);
+            aux->shootX = shootX;
+            aux->shootY = shootY;
+            fprintf(qrytxt, "Shot at (%.2lf, %.2lf)\n", shootX, shootY);
+            fprintf(qrysvg, TEXT_SVG, -1, shootX, shootY, "black", "black", "middle", "*");
+            percursoProfundidade(tree, shotHit, aux);
+            if (!aux->hit)
             {
-                setNauEnergy(i, getNauEnergy(i) - d->d);
-                calculatePos(d->side, d->d, x, y, getFormW(i), getFormH(i), &d->shootX, &d->shootY);
-                fprintf(d->qrytxt, "Shot at (%.2lf, %.2lf)\n", d->shootX, d->shootY);
-                fprintf(d->qrysvg, TEXT_SVG, -1, d->shootX, d->shootY, "black", "black", "middle", "*");
-                percursoProfundidade(d->tree, shotHit, aux);
-                if (!d->hit)
-                {
-                    fprintf(d->qrytxt, "Shot missed.\n");
-                }
+                fprintf(qrytxt, "Shot missed.\n");
             }
-            else
-            {
-                fprintf(d->qrytxt, "This ship has no energy to shoot.\n");
-            }
+            free(aux);
+        }
+        else
+        {
+            fprintf(qrytxt, "This ship has no energy to shoot.\n");
         }
     }
 }
 
 void d(SRbTree tree, FILE* qry, FILE* qrytxt, FILE* qrysvg)
 {
-    struct d* aux = calloc(1, sizeof(struct d));
-    aux->tree = tree;
-    aux->qrytxt = qrytxt;
-    aux->qrysvg = qrysvg;
-    aux->hit = false;
-    fscanf(qry, "%d %s %lf", &aux->id, aux->side, &aux->d);
-    fprintf(qrytxt, "\n>The ship %d will shoot in the %s side with a distance of %.2lf:\n", aux->id, aux->side, aux->d);
-    percursoProfundidade(tree, shoot, aux);
-    free(aux);
+    int id;
+    char side[3];
+    double d;
+    fscanf(qry, "%d %s %lf", &id, side, &d);
+    fprintf(qrytxt, "\n>The ship %d will shoot in the %s side with a distance of %.2lf:\n", id, side, d);
+    void* pArray[2] = {&id, NULL};
+    percursoProfundidade(tree, searchId, pArray);
+    if (pArray[1])
+    {
+        shoot(pArray[1], side, d, tree, qrytxt, qrysvg);
+    }
+    else
+    {
+        fprintf(qrytxt, "Ship %d not found.\n", id);
+    }
 }
 
 /* Functions and structs for MC */
