@@ -259,7 +259,7 @@ void readQry(SRbTree tree, void* paths)
 
         if (qrytxt && qrysvg)
         {
-            fprintf(qrytxt, ">>Start of report:\n");
+            fprintf(qrytxt, ">>Start of pirate fishing:\n");
 
             while (!feof(qry))
             {
@@ -287,9 +287,11 @@ void readQry(SRbTree tree, void* paths)
                 }
                 strcpy(func, " ");
             }
-            fprintf(qrytxt, "\n>>End of report.\n");
+            void* files[2] = {qrytxt, qrysvg};
+            fprintf(qrytxt, "\n>Results:\n");
+            percursoProfundidade(tree, printSvg, files);
+            fprintf(qrytxt, "\n>>End of pirate fishing.\n");
             fclose(qrytxt);
-            percursoProfundidade(tree, printSvg, qrysvg);
             fprintf(qrysvg, "</svg>\n");
             fclose(qrysvg);
             printSRb(tree, getBsdGeoQryDot(paths));
