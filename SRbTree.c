@@ -35,6 +35,60 @@ typedef struct tree
     node* root;
 } tree;
 
+/*Calculating and correcting minimun bounding boxes*/
+void getMbbSub(node* p, double* x1, double* y1, double* x2, double* y2)
+{
+    if (!p->left || !p->right)
+    {
+        *x1 = p->mx1;
+        *y1 = p->my1;
+        *x2 = p->mx2;
+        *y2 = p->my2;
+    }
+    else
+    {
+        *x1 = p->submx1;
+        *y1 = p->submy1;
+        *x2 = p->submx2;
+        *y2 = p->submy2;
+    }
+}
+
+void uneMbb(double x11, double y11, double x12, double y12, double x21, double y21, double x22, double y22, double* xr1, double* yr1, double* xr2, double* yr2)
+{
+    *xr1 = x11 < x21 ? x11 : x21;
+    *xr2 = x21 > x22 ? x21 : x22;
+    *yr1 = y11 < y21 ? y11 : y21;
+    *yr2 = y12 < y22 ? y12 : y22;
+}
+
+void corrigeMbbSubArv(node* p)
+{
+    do
+    {
+        double xe1, ye1, xe2, ye2, xd1, yd1, xd2, yd2, xf1, yf1, xf2, yf2;
+        if (p->left)
+        {
+            getMbbSub(p->left, &xe1, &ye1, &xe2, &ye2);
+        }
+        else
+        {
+            getMbbSub(p, &xe1, &ye1, &xe2, &ye2);
+        }
+        if (p->right)
+        {
+            getMbbSub(p->right, &xd1, &yd1, &xd2, &yd2);
+        }
+        else
+        {
+            getMbbSub(p, &xd1, &yd1, &xd2, &yd2);
+        }
+        uneMbb(xe1, ye1, xe2, ye2, xd1, yd1, xd2, yd2, &xf1, &yf1, &xf2, &yf2);
+        uneMbb(xf1, yf1, xf2, yf2, p->mx1, p->my1, p->mx2, p->my2, &p->submx1, &p->submy1, &p->submx2, &p->submy2);
+        p = p->father;
+    } while (p);
+}
+
 /*Auxiliary functions*/
 void leftRotate(SRbTree t, node* x)
 {
@@ -535,6 +589,9 @@ Node insertSRb(SRbTree t, double x, double y, double mbbX1, double mbbY1, double
     z->color = 'r';
     tre->size++;
     fixupSRb(t, z);
+
+    corrigeMbbSubArv(z);
+
     return z;
 }
 
@@ -699,6 +756,8 @@ Info removeSRb(SRbTree t, double xa, double ya, double* mbbX1, double* mbbY1, do
     {
         *mbbY2 = z->my2;
     }
+
+    corrigeMbbSubArv(z);
 
     // Method 1: create copy than free original
     // Valgrind error: invalid read of size 8 (104 bytes inside a block of 120 free'd)
