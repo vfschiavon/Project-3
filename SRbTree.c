@@ -165,7 +165,7 @@ node* searchNode(node* currentnode, double pXa, double pYa)
     node* result = NULL;
     if (currentnode)
     {
-        if (currentnode->xa == pXa && currentnode->ya == pYa)
+        if (currentnode->xa == pXa && currentnode->ya == pYa) // Colocar condicionais para descida (poda) e adicionar fabs() com epsilon
         {
             result = currentnode;
         }
