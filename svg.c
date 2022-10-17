@@ -2,22 +2,43 @@
 
 #include "forms.h"
 
+void boatCases(Info i, double x, double y, void** files)
+{
+    fprintf((FILE*) files[0], "Boat %d ended with M$ %.2lf\n", getFormId(i), getNauBalance(i));
+    if (getNauEnergy(i) == 0)
+    {
+        fprintf((FILE*) files[1], RECT_SVG, getFormId(i), x, y, getFormW(i), getFormH(i), "#484537", getFormCorp(i));
+    }
+    else if (getNauEnergy(i) < 10)
+    {
+        fprintf((FILE*) files[1], RECT_SVG, getFormId(i), x, y, getFormW(i), getFormH(i), "FFCC00", getFormCorp(i));
+    }
+    else if (getNauEnergy(i) < 30)
+    {
+        fprintf((FILE*) files[1], RECT_SVG, getFormId(i), x, y, getFormW(i), getFormH(i), "217821", getFormCorp(i));
+    }
+    else
+    {
+        fprintf((FILE*) files[1], RECT_SVG, getFormId(i), x, y, getFormW(i), getFormH(i), "800066", getFormCorp(i));
+    }
+}
+
 void printSvg(Info i, double x, double y, double mbbX1, double mbbY1, double mbbX2, double mbbY2, void* aux)
 {
-    FILE* svg = aux;
+    void** files = aux;
     switch (getFormType(i))
     {
         case CIRCLE:
-            fprintf(svg, CIRC_SVG, getFormId(i), getFormX(i), getFormY(i), getFormR(i), getFormCorb(i), getFormCorp(i));
+            fprintf((FILE*) files[1], CIRC_SVG, getFormId(i), x, y, getFormR(i), getFormCorb(i), getFormCorp(i));
             break;
         case RECTANGLE:
-            fprintf(svg, RECT_SVG, getFormId(i), getFormX(i), getFormY(i), getFormW(i), getFormH(i), getFormCorb(i), getFormCorp(i));
+            boatCases(i, x, y, files);
             break;
         case LINE:
-            fprintf(svg, LINE_SVG, getFormId(i), getFormX(i), getFormY(i), getFormX2(i), getFormY2(i), getFormCorb(i));
+            fprintf((FILE*) files[1], LINE_SVG, getFormId(i), getFormX(i), getFormY(i), getFormX2(i), getFormY2(i), getFormCorb(i));
             break;
         case TEXT:
-            fprintf(svg, TEXT_SVG, getFormId(i), getFormX(i), getFormY(i), getFormCorb(i), getFormCorp(i), getFormA(i), getFormTxto(i));
+            fprintf((FILE*) files[1], TEXT_SVG, getFormId(i), x, y, getFormCorb(i), getFormCorp(i), getFormA(i), getFormTxto(i));
             break;
         default:
             break;
