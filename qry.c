@@ -24,7 +24,7 @@ void energize(Info i, double x, double y, double mbbX1, double mbbY1, double mbb
     if (getFormType(i) == RECTANGLE)
     {
         struct e* e = aux;
-        fprintf(e->qrytxt, "Energized boat %d with energy %.2lf\n", getFormId(i), e->v);
+        fprintf(e->qrytxt, "Energized boat %d with %.2lf\n", getFormId(i), e->v);
         setNauEnergy(i, e->v);
     }
 }

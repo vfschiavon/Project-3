@@ -247,8 +247,6 @@ void readPrintGeo(SRbTree tree, void* paths)
 /*>>>>>>>>>>readQry<<<<<<<<<<*/
 void readQry(SRbTree tree, void* paths)
 {
-    char func[3];
-
     FILE* qry = fopen(getBedQry(paths), "r");
 
     if (qry)
@@ -259,6 +257,7 @@ void readQry(SRbTree tree, void* paths)
 
         if (qrytxt && qrysvg)
         {
+            char func[3];
             double absTotal = 0;
             fprintf(qrytxt, ">>Start of pirate fishing:\n");
 
@@ -288,7 +287,10 @@ void readQry(SRbTree tree, void* paths)
                 }
                 strcpy(func, " ");
             }
-            fprintf(qrytxt, "\n>Sum of all captures: M$ %.2lf\n", absTotal);
+            if (absTotal)
+            {
+                fprintf(qrytxt, "\n>Sum of all captures: M$ %.2lf\n", absTotal);
+            }
             void* files[2] = {qrytxt, qrysvg};
             fprintf(qrytxt, "\n>Results:\n");
             percursoProfundidade(tree, printSvg, files);
