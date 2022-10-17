@@ -11,15 +11,15 @@ void boatCases(Info i, double x, double y, void** files)
     }
     else if (getNauEnergy(i) < 10)
     {
-        fprintf((FILE*) files[1], RECT_SVG, getFormId(i), x, y, getFormW(i), getFormH(i), "FFCC00", getFormCorp(i));
+        fprintf((FILE*) files[1], RECT_SVG, getFormId(i), x, y, getFormW(i), getFormH(i), "#FFCC00", getFormCorp(i));
     }
     else if (getNauEnergy(i) < 30)
     {
-        fprintf((FILE*) files[1], RECT_SVG, getFormId(i), x, y, getFormW(i), getFormH(i), "217821", getFormCorp(i));
+        fprintf((FILE*) files[1], RECT_SVG, getFormId(i), x, y, getFormW(i), getFormH(i), "#217821", getFormCorp(i));
     }
     else
     {
-        fprintf((FILE*) files[1], RECT_SVG, getFormId(i), x, y, getFormW(i), getFormH(i), "800066", getFormCorp(i));
+        fprintf((FILE*) files[1], RECT_SVG, getFormId(i), x, y, getFormW(i), getFormH(i), "#800066", getFormCorp(i));
     }
 }
 
