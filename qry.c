@@ -46,10 +46,10 @@ struct e
 
 void energize(Info i, double x, double y, double mbbX1, double mbbY1, double mbbX2, double mbbY2, void* aux)
 {
-    struct e* e = aux;
     if (getFormType(i) == RECTANGLE)
     {
-        fprintf(e->qrytxt, "Energized ship %d with energy %.2lf\n", getFormId(i), e->v);
+        struct e* e = aux;
+        fprintf(e->qrytxt, "Energized boat %d with energy %.2lf\n", getFormId(i), e->v);
         setNauEnergy(i, e->v);
     }
 }
@@ -59,7 +59,7 @@ void e(SRbTree tree, FILE* qry, FILE* qrytxt)
     struct e* aux = calloc(1, sizeof(struct e));
     aux->qrytxt = qrytxt;
     fscanf(qry, "%lf", &aux->v);
-    fprintf(qrytxt, "\n>Energizing all ships with %.2lf:\n", aux->v);
+    fprintf(qrytxt, "\n>Energizing all boats with %.2lf:\n", aux->v);
     percursoProfundidade(tree, energize, aux);
     free(aux);
 }
@@ -91,9 +91,16 @@ void moveMV(Info i, double dx, double dy, void* tree, FILE* qrytxt)
             fprintf(qrytxt, "Moved %s %d from (%.2lf, %.2lf) to (%.2lf, %.2lf)\n", formTypeToString(getFormType(tempInfo)), getFormId(tempInfo), getFormX(tempInfo) - dx, getFormY(tempInfo) - dy, getFormX(tempInfo), getFormY(tempInfo));
             break;
         case RECTANGLE:
-            setNauEnergy(tempInfo, getNauEnergy(tempInfo) - (sqrt(pow(dx, 2) + pow(dy, 2)) / 5));
-            insertSRb(tree, getFormX(tempInfo), getFormY(tempInfo), getFormX(tempInfo), getFormY(tempInfo), getFormX(tempInfo) + getFormW(tempInfo), getFormY(tempInfo) + getFormH(tempInfo), tempInfo);
-            fprintf(qrytxt, "Moved %s %d from (%.2lf, %.2lf) to (%.2lf, %.2lf)\n", formTypeToString(getFormType(tempInfo)), getFormId(tempInfo), getFormX(tempInfo) - dx, getFormY(tempInfo) - dy, getFormX(tempInfo), getFormY(tempInfo));
+            if (getNauEnergy(i) >= sqrt(pow(dx, 2) + pow(dy, 2)) / 5)
+            {
+                setNauEnergy(tempInfo, getNauEnergy(tempInfo) - (sqrt(pow(dx, 2) + pow(dy, 2)) / 5));
+                insertSRb(tree, getFormX(tempInfo), getFormY(tempInfo), getFormX(tempInfo), getFormY(tempInfo), getFormX(tempInfo) + getFormW(tempInfo), getFormY(tempInfo) + getFormH(tempInfo), tempInfo);
+                fprintf(qrytxt, "Moved %s %d from (%.2lf, %.2lf) to (%.2lf, %.2lf)\n", formTypeToString(getFormType(tempInfo)), getFormId(tempInfo), getFormX(tempInfo) - dx, getFormY(tempInfo) - dy, getFormX(tempInfo), getFormY(tempInfo));
+            }
+            else
+            {
+                fprintf(qrytxt, "This boat has no energy to move.\n");
+            }
             break;
         case LINE:;
             double xanchor, yanchor;
@@ -124,35 +131,120 @@ void mv(SRbTree tree, FILE* qry, FILE* qrytxt)
     }
     else
     {
-        fprintf(qrytxt, "Object %d not found.\n", id);
+        fprintf(qrytxt, "Form %d not found.\n", id);
     }
 }
 
 /* Functions and structs for LR */
 struct lr
 {
-    int id;
-    char side[3];
-    double d;
+    double throwX;
+    double throwY;
     double w;
     double h;
-    bool hit;
-    void* tree;
+    double total;
+    bool captured;
     FILE* qrytxt;
-    FILE* qrysvg;
 };
 
-void lr(SRbTree tree, FILE* qry, FILE* qrytxt, FILE* qrysvg)
+void verifyNet(Info i, double x, double y, double mbbX1, double mbbY1, double mbbX2, double mbbY2, void* aux)
 {
-    struct lr* aux = calloc(1, sizeof(struct lr));
-    aux->tree = tree;
-    aux->qrytxt = qrytxt;
-    aux->qrysvg = qrysvg;
-    aux->hit = false;
-    fscanf(qry, "%d %s %lf %lf %lf", &aux->id, aux->side, &aux->d, &aux->w, &aux->h);
-    fprintf(qrytxt, "\n>The ship %d will throw a net in the %s side with a distance of %.2lf, width of %.2lf and height of %.2lf:\n", aux->id, aux->side, aux->d, aux->w, aux->h);
-    // percursoProfundidade(tree, searchId, aux);
-    free(aux);
+    if (getFormType(i) != RECTANGLE)
+    {
+        struct lr* lr = aux;
+        if (formFullInside(i, lr->throwX, lr->throwY, lr->throwX + lr->w, lr->throwY + lr->h))
+        {
+            lr->captured = true;
+            if (getFormType(i) == CIRCLE)
+            {
+                fprintf(lr->qrytxt, "Captured fish %d (%.2lf, %.2lf) worth M$ 5,00\n", getFormId(i), x, y);
+                lr->total += 5;
+                setNauBalance(i, getNauBalance(i) + 5);
+            }
+            else if (getFormType(i) == LINE)
+            {
+                fprintf(lr->qrytxt, "Captured shrimp %d (%.2lf, %.2lf, %.2lf, %.2lf) worth M$ 1,00\n", getFormId(i), getFormX(i), getFormY(i), getFormX2(i), getFormY2(i));
+                lr->total += 1;
+                setNauBalance(i, getNauBalance(i) + 1);
+            }
+            else
+            {
+                if (!strcmp(getFormTxto(i), ">-|-<"))
+                {
+                    fprintf(lr->qrytxt, "Captured lobster %d (%.2lf, %.2lf) worth M$ 20,00\n", getFormId(i), x, y);
+                    lr->total += 20;
+                    setNauBalance(i, getNauBalance(i) + 20);
+                }
+                else if (!strcmp(getFormTxto(i), "$"))
+                {
+                    fprintf(lr->qrytxt, "Captured coin %d (%.2lf, %.2lf) worth 0.5 energy.\n", getFormId(i), x, y);
+                    setNauEnergy(i, getNauEnergy(i) + 0.5);
+                }
+                else
+                {
+                    fprintf(lr->qrytxt, "Captured algae or debris %d (%.2lf, %.2lf) worth nothing.\n", getFormId(i), x, y);
+                }
+            }
+        }
+    }
+}
+
+double throwNet(Info i, char* side, double d, double w, double h, void* tree, FILE* qrytxt, FILE* qrysvg)
+{
+    if (getFormType(i) == RECTANGLE)
+    {
+        if (getNauEnergy(i) >= w * h * d / 125)
+        {
+            double throwX, throwY;
+            struct lr* aux = calloc(1, sizeof(struct lr));
+            aux->w = w;
+            aux->h = h;
+            aux->qrytxt = qrytxt;
+            fprintf(qrytxt, "Energy before throw: %.2lf\n", getNauEnergy(i));
+            setNauEnergy(i, getNauEnergy(i) - w * h * d / 125);
+            fprintf(qrytxt, "Energy after throw: %.2lf\n", getNauEnergy(i));
+            calculatePos(side, d, getFormX(i), getFormY(i), getFormW(i), getFormH(i), &throwX, &throwY);
+            aux->throwX = throwX;
+            aux->throwY = throwY;
+            fprintf(qrytxt, "Net thrown at (%.2lf, %.2lf, %.2lf, %.2lf)\n", throwX, throwY, w, h);
+            fprintf(qrysvg, RECT_SVG, -1, throwX, throwY, w, h, "black", "none");
+            percursoProfundidade(tree, verifyNet, aux);
+            if (!aux->captured)
+            {
+                fprintf(qrytxt, "Didn't capture anything.\n");
+            }
+            double total = aux->total;
+            free(aux);
+            return total;
+        }
+        else
+        {
+            fprintf(qrytxt, "This boat has no energy to throw a net.\n");
+        }
+    }
+    return 0;
+}
+
+double lr(SRbTree tree, FILE* qry, FILE* qrytxt, FILE* qrysvg)
+{
+    int id;
+    char side[3];
+    double d, w, h;
+    fscanf(qry, "%d %s %lf %lf %lf", &id, side, &d, &w, &h);
+    fprintf(qrytxt, "\n>The boat %d will throw a net in the %s side with a distance of %.2lf, width of %.2lf and height of %.2lf:\n", id, side, d, w, h);
+    void* pArray[2] = {&id, NULL};
+    percursoProfundidade(tree, searchId, pArray);
+    if (pArray[1])
+    {
+        double total = throwNet(pArray[1], side, d, w, h, tree, qrytxt, qrysvg);
+        fprintf(qrytxt, "Total captured: M$ %.2lf\n", total);
+        return total;
+    }
+    else
+    {
+        fprintf(qrytxt, "Boat %d not found.\n", id);
+    }
+    return 0;
 }
 
 /* Functions and structs for D */
@@ -168,14 +260,14 @@ struct d
 
 void shotHit(Info i, double x, double y, double mbbX1, double mbbY1, double mbbX2, double mbbY2, void* aux)
 {
-    struct d* d = aux;
     if (getFormType(i) == RECTANGLE)
     {
+        struct d* d = aux;
         if (d->shootX >= x && d->shootY >= y && d->shootX <= x + getFormW(i) && d->shootY <= y + getFormH(i))
         {
             d->hit = true;
-            fprintf(d->qrytxt, "Shot hit ship %d (%.2lf, %.2lf, %.2lf, %.2lf)\n", getFormId(i), x, y, getFormW(i), getFormH(i));
-            fprintf(d->qrytxt, "The attacking ship captured M$ %.2lf from this destroyed ship.\n", getNauBalance(i));
+            fprintf(d->qrytxt, "Shot hit boat %d (%.2lf, %.2lf, %.2lf, %.2lf)\n", getFormId(i), x, y, getFormW(i), getFormH(i));
+            fprintf(d->qrytxt, "The attacking boat captured M$ %.2lf from this destroyed boat.\n", getNauBalance(i));
             setNauBalance(d->shooter, getNauBalance(d->shooter) + getNauBalance(i));
             removeSRb(d->tree, x, y, 0, 0, 0, 0);
         }
@@ -208,7 +300,7 @@ void shoot(Info i, char* side, double d, void* tree, FILE* qrytxt, FILE* qrysvg)
         }
         else
         {
-            fprintf(qrytxt, "This ship has no energy to shoot.\n");
+            fprintf(qrytxt, "This boat has no energy to shoot.\n");
         }
     }
 }
@@ -219,7 +311,7 @@ void d(SRbTree tree, FILE* qry, FILE* qrytxt, FILE* qrysvg)
     char side[3];
     double d;
     fscanf(qry, "%d %s %lf", &id, side, &d);
-    fprintf(qrytxt, "\n>The ship %d will shoot in the %s side with a distance of %.2lf:\n", id, side, d);
+    fprintf(qrytxt, "\n>The boat %d will shoot in the %s side with a distance of %.2lf:\n", id, side, d);
     void* pArray[2] = {&id, NULL};
     percursoProfundidade(tree, searchId, pArray);
     if (pArray[1])
@@ -228,7 +320,7 @@ void d(SRbTree tree, FILE* qry, FILE* qrytxt, FILE* qrysvg)
     }
     else
     {
-        fprintf(qrytxt, "Ship %d not found.\n", id);
+        fprintf(qrytxt, "Boat %d not found.\n", id);
     }
 }
 
@@ -258,9 +350,9 @@ void moveMC(Info i, void* aux)
 
 void verifyInside(Info i, double x, double y, double mbbX1, double mbbY1, double mbbX2, double mbbY2, void* aux)
 {
-    struct mc* mc = aux;
     if (getFormType(i) == CIRCLE)
     {
+        struct mc* mc = aux;
         if (formFullInside(i, mc->x, mc->y, mc->x + mc->w, mc->y + mc->h))
         {
             moveMC(i, aux);
