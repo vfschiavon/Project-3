@@ -11,10 +11,10 @@ typedef struct all_paths
     char* qryarq; // arq.qry
     char* qryname; // arq (qry)
     char* bsdgeosvg; // bsd/nomegeo.svg
-    char* bsdgeodot; // bsd/nomegeo.dot ----------
+    char* bsdgeodot; // bsd/nomegeo.dot
     char* bsdgeoqrysvg; // bsd/nomegeo_qry.svg
     char* bsdgeoqrytxt; // bsd/nomegeo_qry.txt
-    char* bsdgeoqrydot; // bsd/nomegeo_qry.dot ------------
+    char* bsdgeoqrydot; // bsd/nomegeo_qry.dot
 } all_paths;
 
 void* createAllPaths()
