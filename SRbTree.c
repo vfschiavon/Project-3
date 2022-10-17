@@ -340,28 +340,29 @@ void deleteFixupSRb(tree* t, node* x)
     x->color = 'b';
 }
 
-Info createSubstitute(Info original)
-{
-    void* copy = createForm();
-    switch (getFormType(original))
-    {
-        case CIRCLE:
-            setFullCirc(copy, getFormId(original), getFormX(original), getFormY(original), getFormR(original), getFormCorb(original), getFormCorp(original));
-            break;
-        case RECTANGLE:
-            setFullRect(copy, getFormId(original), getFormX(original), getFormY(original), getFormW(original), getFormH(original), getFormCorb(original), getFormCorp(original));
-            break;
-        case LINE:
-            setFullLine(copy, getFormId(original), getFormX(original), getFormY(original), getFormX2(original), getFormY2(original), getFormCorb(original));
-            break;
-        case TEXT:
-            setFullText(copy, getFormId(original), getFormX(original), getFormY(original), getFormCorb(original), getFormA(original), getFormTxto(original));
-            break;
-        default:
-            break;
-    }
-    return copy;
-}
+// Attemp to delete node with no error or leak
+// Info createSubstitute(Info original)
+// {
+//     void* copy = createForm();
+//     switch (getFormType(original))
+//     {
+//         case CIRCLE:
+//             setFullCirc(copy, getFormId(original), getFormX(original), getFormY(original), getFormR(original), getFormCorb(original), getFormCorp(original));
+//             break;
+//         case RECTANGLE:
+//             setFullRect(copy, getFormId(original), getFormX(original), getFormY(original), getFormW(original), getFormH(original), getFormCorb(original), getFormCorp(original));
+//             break;
+//         case LINE:
+//             setFullLine(copy, getFormId(original), getFormX(original), getFormY(original), getFormX2(original), getFormY2(original), getFormCorb(original));
+//             break;
+//         case TEXT:
+//             setFullText(copy, getFormId(original), getFormX(original), getFormY(original), getFormCorb(original), getFormA(original), getFormTxto(original));
+//             break;
+//         default:
+//             break;
+//     }
+//     return copy;
+// }
 
 void recursivePrintNode(node* currentnode, FILE* dot)
 {
@@ -682,13 +683,32 @@ Info removeSRb(SRbTree t, double xa, double ya, double* mbbX1, double* mbbY1, do
     }
     tre->size--;
 
+    if (mbbX1)
+    {
+        *mbbX1 = z->mx1;
+    }
+    if (mbbY1)
+    {
+        *mbbY1 = z->my1;
+    }
+    if (mbbX2)
+    {
+        *mbbX2 = z->mx2;
+    }
+    if (mbbY2)
+    {
+        *mbbY2 = z->my2;
+    }
+
     // Method 1: create copy than free original
-    // void* formToReturn = createSubstitute(z->info);
+    // Valgrind error: invalid read of size 8 (104 bytes inside a block of 120 free'd)
+    // Info formToReturn = createSubstitute(z->info);
     // free(z->info);
     // free(z);
     // return formToReturn;
 
     // Method 2: save original->info than free original --- these one leaks memory
+    // Valgrind error: invalid read of size 8 (104 bytes inside a block of 120 free'd)
     Info info = z->info;
     // free(z);
     return info;
