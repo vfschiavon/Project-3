@@ -160,6 +160,29 @@ void fixupSRb(SRbTree t, node* pZ)
     tre->root->color = 'b';
 }
 
+void recursiveGetPartBbSRb(node* currentnode, double x, double y, double w, double h, Lista resultado)
+{
+    if (currentnode)
+    {
+        if ((currentnode->mx1 >= x && currentnode->my1 >= y && currentnode->mx1 <= x + w && currentnode->my1 <= y + h) ||
+            (currentnode->mx2 >= x && currentnode->my2 >= y && currentnode->mx2 <= x + w && currentnode->my2 <= y + h) ||
+            (currentnode->mx1 >= x && currentnode->my2 >= y && currentnode->mx1 <= x + w && currentnode->my2 <= y + h) ||
+            (currentnode->mx2 >= x && currentnode->my1 >= y && currentnode->mx2 <= x + w && currentnode->my1 <= y + h))
+        {
+            insertAtTail(resultado, currentnode->info);
+        }
+        
+        if ((currentnode->submx1 >= x && currentnode->submy1 >= y && currentnode->submx1 <= x + w && currentnode->submy1 <= y + h) ||
+            (currentnode->submx2 >= x && currentnode->submy2 >= y && currentnode->submx2 <= x + w && currentnode->submy2 <= y + h) ||
+            (currentnode->submx1 >= x && currentnode->submy2 >= y && currentnode->submx1 <= x + w && currentnode->submy2 <= y + h) ||
+            (currentnode->submx2 >= x && currentnode->submy1 >= y && currentnode->submx2 <= x + w && currentnode->submy1 <= y + h))
+        {
+            recursiveGetPartBbSRb(currentnode->left, x, y, w, h, resultado);
+            recursiveGetPartBbSRb(currentnode->right, x, y, w, h, resultado);
+        }
+    }
+}
+
 void recursiveGetBbSRb(node* currentnode, double x, double y, double w, double h, Lista resultado)
 {
     if (currentnode)
@@ -514,6 +537,15 @@ Node insertSRb(SRbTree t, double x, double y, double mbbX1, double mbbY1, double
 Node insertBbSRb(SRbTree t, double mbbX1, double mbbY1, double mbbX2, double mbbY2, Info info)
 {
     return insertSRb(t, mbbX1, mbbY1,  mbbX1, mbbY1,  mbbX2, mbbY2,  info);
+}
+
+void getBbPartSRb(SRbTree t, double x, double y, double w, double h, Lista resultado)
+{
+    tree* tre = t;
+    if (tre->root)
+    {
+        recursiveGetPartBbSRb(tre->root, x, y, w, h, resultado);
+    }
 }
 
 void getBbSRb(SRbTree t, double x, double y, double w, double h, Lista resultado)

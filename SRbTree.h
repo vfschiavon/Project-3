@@ -61,7 +61,7 @@ Node insertBbSRb(SRbTree t, double mbbX1, double mbbY1, double mbbX2, double mbb
  * Equivalente a insertSRb(t, mbbX1, mbbY1,  mbbX1, mbbY1,  mbbX2, mbbY2,  info)
  */
 
-void getBbPartSRb(SRbTree t, double x, double y, double w, double h, Lista resultado); // ---------- TO DO ------------
+void getBbPartSRb(SRbTree t, double x, double y, double w, double h, Lista resultado);
 /*
  * Insere na lista resultado os nos da arvore (Node) que seu retangulo envolvente possua alguma
  * interseccao com a regiao retangula de ancora (x,y), largura w e altura h.
