@@ -45,10 +45,6 @@ void setFormY(void* formtoset, double y);
 
 void setFormY2(void* formtoset, double y2);
 
-void setFormCorb(void* formtoset, char* corb);
-
-void setFormCorp(void* formtoset, char* corp);
-
 /*>>>>>>>>>>All gets<<<<<<<<<<*/
 
 int getFormType(void* formtoget);

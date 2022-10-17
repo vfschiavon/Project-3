@@ -189,18 +189,6 @@ void setFormY2(void* formtoset, double y2)
     f->y2 = y2;
 }
 
-void setFormCorb(void* formtoset, char* corb)
-{
-    form* f = formtoset;
-    strcpy(f->corb, corb);
-}
-
-void setFormCorp(void* formtoset, char* corp)
-{
-    form* f = formtoset;
-    strcpy(f->corp, corp);
-}
-
 /*>>>>>>>>>>All gets<<<<<<<<<<*/
 
 int getFormType(void* formtoget)
