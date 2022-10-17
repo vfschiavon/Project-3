@@ -3,15 +3,20 @@
 #ifndef PATHS_H
 #define PATHS_H
 
+// Create the struct that stores all paths and return it
 void* createAllPaths();
 
+// Free all the paths in the given struct
 void freeAllPaths(void* aptofree);
 
+// Verifies the bar int the given path
 char* prepareDir(char* dir);
 
+// onlyname receives only the name of the asread file
 void prepareDoc(char* asread, char* onlyname);
 
 /*>>>>>>>>>>All sets<<<<<<<<<<*/
+/*Set the given data into the given struct*/
 
 void setBed(void* aptoset, char* bed);
 
@@ -40,6 +45,7 @@ void setBsdGeoQryTxt(void* aptoset, char* bsdgeoqrytxt);
 void setBsdGeoQryDot(void* aptoset, char* bsdgeoqrydot);
 
 /*>>>>>>>>>>All gets<<<<<<<<<<*/
+/*Return the specified data from the given struct*/
 
 char* getBed(void* aptoget);
 
