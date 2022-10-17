@@ -21,8 +21,6 @@ void setHead(void* listtoset, void* nodetoset);
 
 /*>>>>>>>>>>All gets<<<<<<<<<<*/
 
-void* getPrev(void* nodetoget);
-
 void* getData(void* nodetoget);
 
 void* getNext(void* nodetoget);
@@ -30,7 +28,5 @@ void* getNext(void* nodetoget);
 void* getHead(void* listtoget);
 
 int getSize(void* listtoget);
-
-void* getTail(void* listtoget);
 
 #endif

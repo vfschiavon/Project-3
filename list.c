@@ -2,7 +2,6 @@
 
 typedef struct node
 {
-    struct node* prev;
     void* data;
     struct node* next;
 } node;
@@ -11,7 +10,6 @@ typedef struct info
 {
     node* head;
     int size;
-    node* tail;
 } info;
 
 void* createList()
@@ -47,13 +45,15 @@ void insertAtTail(void* listtoadd, void* nodetoadd)
     if (!list->head)
     {
         list->head = n;
-        list->tail = n;
     }
     else
     {
-        list->tail->next = n;
-        n->prev = list->tail;
-        list->tail = n;
+        node* current = list->head;
+        while (current->next)
+        {
+            current = current->next;
+        }
+        current->next = n;
     }
     list->size++;
 }
@@ -62,28 +62,21 @@ void removeNode(void* listtoremove, void* nodetoremove)
 {
     info* list = listtoremove;
     node* n = nodetoremove;
-    if (!n->prev && !n->next)
-    {
-        list->head = NULL;
-        list->tail = NULL;
-    }
-    else if (!n->prev)
+    if (list->head == n)
     {
         list->head = n->next;
-        n->next->prev = NULL;
-    }
-    else if (!n->next)
-    {
-        list->tail = n->prev;
-        n->prev->next = NULL;
     }
     else
     {
-        n->prev->next = n->next;
-        n->next->prev = n->prev;
+        node* current = list->head;
+        while (current->next != n)
+        {
+            current = current->next;
+        }
+        current->next = n->next;
     }
-    list->size--;
     free(n);
+    list->size--;
 }
 
 /*>>>>>>>>>>All sets<<<<<<<<<<*/
@@ -95,12 +88,6 @@ void setHead(void* listtoset, void* nodetoset)
 }
 
 /*>>>>>>>>>>All gets<<<<<<<<<<*/
-
-void* getPrev(void* nodetoget)
-{
-    node* n = nodetoget;
-    return n->prev;
-}
 
 void* getData(void* nodetoget)
 {
@@ -124,10 +111,4 @@ int getSize(void* list)
 {
     info* l = list;
     return l->size;
-}
-
-void* getTail(void* list)
-{
-    info* l = list;
-    return l->tail;
 }
