@@ -12,32 +12,7 @@ void searchId(Info i, double x, double y, double mbbX1, double mbbY1, double mbb
     }
 }
 
-// Used in LR and D
-void calculatePos(char* side, double d, double x, double y, double w, double h, double* xref, double* yref)
-{
-    if (!strcmp(side, "PP")) // Popa
-    {
-        *xref = x + (w / 2);
-        *yref = y - d;
-    }
-    else if (!strcmp(side, "BB")) // Bombordo
-    {
-        *xref = x + w + d;
-        *yref = y + (h / 2);
-    }
-    else if (!strcmp(side, "PR")) // Proa
-    {
-        *xref = x + (w / 2);
-        *yref = y + h + d;
-    }
-    else if (!strcmp(side, "EB")) // Estibordo
-    {
-        *xref = x - d;
-        *yref = y + (h / 2);
-    }
-}
-
-/* Functions and structs for E */
+/* Functions and struct for E */
 struct e
 {
     double v;
@@ -135,7 +110,7 @@ void mv(SRbTree tree, FILE* qry, FILE* qrytxt)
     }
 }
 
-/* Functions and structs for LR */
+/* Functions and struct for LR */
 struct lr
 {
     double throwX;
@@ -146,6 +121,30 @@ struct lr
     bool captured;
     FILE* qrytxt;
 };
+
+void calculateNetPos(char* side, double d, double x, double y, double w, double h, double* xref, double* yref)
+{
+    if (!strcmp(side, "PP")) // Popa
+    {
+        *xref = x;
+        *yref = y - d;
+    }
+    else if (!strcmp(side, "BB")) // Bombordo
+    {
+        *xref = x + w + d;
+        *yref = y;
+    }
+    else if (!strcmp(side, "PR")) // Proa
+    {
+        *xref = x;
+        *yref = y + h + d;
+    }
+    else if (!strcmp(side, "EB")) // Estibordo
+    {
+        *xref = x - d;
+        *yref = y;
+    }
+}
 
 void verifyNet(Info i, double x, double y, double mbbX1, double mbbY1, double mbbX2, double mbbY2, void* aux)
 {
@@ -199,7 +198,7 @@ double throwNet(Info i, char* side, double d, double w, double h, void* tree, FI
             fprintf(qrytxt, "Energy before throw: %.2lf\n", getNauEnergy(i));
             setNauEnergy(i, getNauEnergy(i) - w * h * d / 125);
             fprintf(qrytxt, "Energy after throw: %.2lf\n", getNauEnergy(i));
-            calculatePos(side, d, getFormX(i), getFormY(i), getFormW(i), getFormH(i), &throwX, &throwY);
+            calculateNetPos(side, d, getFormX(i), getFormY(i), getFormW(i), getFormH(i), &throwX, &throwY);
             aux->throwX = throwX;
             aux->throwY = throwY;
             fprintf(qrytxt, "Net thrown at (%.2lf, %.2lf, %.2lf, %.2lf)\n", throwX, throwY, w, h);
@@ -255,6 +254,30 @@ struct d
     FILE* qrytxt;
 };
 
+void calculateShootPos(char* side, double d, double x, double y, double w, double h, double* xref, double* yref)
+{
+    if (!strcmp(side, "PP")) // Popa
+    {
+        *xref = x + (w / 2);
+        *yref = y - d;
+    }
+    else if (!strcmp(side, "BB")) // Bombordo
+    {
+        *xref = x + w + d;
+        *yref = y + (h / 2);
+    }
+    else if (!strcmp(side, "PR")) // Proa
+    {
+        *xref = x + (w / 2);
+        *yref = y + h + d;
+    }
+    else if (!strcmp(side, "EB")) // Estibordo
+    {
+        *xref = x - d;
+        *yref = y + (h / 2);
+    }
+}
+
 void shotHit(Info i, double x, double y, double mbbX1, double mbbY1, double mbbX2, double mbbY2, void* aux)
 {
     if (getFormType(i) == RECTANGLE)
@@ -283,7 +306,7 @@ void shoot(Info i, char* side, double d, void* tree, FILE* qrytxt, FILE* qrysvg)
             aux->tree = tree;
             aux->qrytxt = qrytxt;
             setNauEnergy(i, getNauEnergy(i) - d);
-            calculatePos(side, d, getFormX(i), getFormY(i), getFormW(i), getFormH(i), &shootX, &shootY);
+            calculateShootPos(side, d, getFormX(i), getFormY(i), getFormW(i), getFormH(i), &shootX, &shootY);
             aux->shootX = shootX;
             aux->shootY = shootY;
             fprintf(qrytxt, "Shot at (%.2lf, %.2lf)\n", shootX, shootY);
@@ -321,7 +344,7 @@ void d(SRbTree tree, FILE* qry, FILE* qrytxt, FILE* qrysvg)
     }
 }
 
-/* Functions and structs for MC */
+/* Functions and struct for MC */
 struct mc
 {
     double dx;
