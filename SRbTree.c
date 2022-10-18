@@ -394,30 +394,6 @@ void deleteFixupSRb(tree* t, node* x)
     x->color = 'b';
 }
 
-// Attemp to delete node with no error or leak
-// Info createSubstitute(Info original)
-// {
-//     void* copy = createForm();
-//     switch (getFormType(original))
-//     {
-//         case CIRCLE:
-//             setFullCirc(copy, getFormId(original), getFormX(original), getFormY(original), getFormR(original), getFormCorb(original), getFormCorp(original));
-//             break;
-//         case RECTANGLE:
-//             setFullRect(copy, getFormId(original), getFormX(original), getFormY(original), getFormW(original), getFormH(original), getFormCorb(original), getFormCorp(original));
-//             break;
-//         case LINE:
-//             setFullLine(copy, getFormId(original), getFormX(original), getFormY(original), getFormX2(original), getFormY2(original), getFormCorb(original));
-//             break;
-//         case TEXT:
-//             setFullText(copy, getFormId(original), getFormX(original), getFormY(original), getFormCorb(original), getFormA(original), getFormTxto(original));
-//             break;
-//         default:
-//             break;
-//     }
-//     return copy;
-// }
-
 void recursivePrintNode(node* currentnode, FILE* dot)
 {
     if (currentnode)
@@ -492,9 +468,10 @@ void recursiveSimetrico(node* currentnode, FvisitaNo fVisita, void* aux)
 {
     if (currentnode)
     {
+        void* right = currentnode->right;
         recursiveSimetrico(currentnode->left, fVisita, aux);
         fVisita(currentnode->info, currentnode->xa, currentnode->ya, currentnode->mx1, currentnode->mx2, currentnode->my1, currentnode->my2, aux);
-        recursiveSimetrico(currentnode->right, fVisita, aux);
+        recursiveSimetrico(right, fVisita, aux);
     }
     else 
     {
@@ -506,9 +483,11 @@ void recursiveProfundidade(node* currentnode, FvisitaNo fVisita, void* aux)
 {
     if (currentnode)
     {
+        void* left = currentnode->left;
+        void* right = currentnode->right;
         fVisita(currentnode->info, currentnode->xa, currentnode->ya, currentnode->mx1, currentnode->mx2, currentnode->my1, currentnode->my2, aux);
-        recursiveProfundidade(currentnode->left, fVisita, aux);
-        recursiveProfundidade(currentnode->right, fVisita, aux);
+        recursiveProfundidade(left, fVisita, aux);
+        recursiveProfundidade(right, fVisita, aux);
     }
     else 
     {
@@ -758,18 +737,9 @@ Info removeSRb(SRbTree t, double xa, double ya, double* mbbX1, double* mbbY1, do
     }
 
     corrigeMbbSubArv(z);
-
-    // Method 1: create copy than free original
-    // Valgrind error: invalid read of size 8 (104 bytes inside a block of 120 free'd)
-    // Info formToReturn = createSubstitute(z->info);
-    // free(z->info);
-    // free(z);
-    // return formToReturn;
-
-    // Method 2: save original->info than free original --- these one leaks memory
-    // Valgrind error: invalid read of size 8 (104 bytes inside a block of 120 free'd)
+    
     Info info = z->info;
-    // free(z);
+    free(z);
     return info;
 }
 
