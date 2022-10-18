@@ -119,6 +119,7 @@ struct lr
     double h;
     double total;
     bool captured;
+    void* tree;
     FILE* qrytxt;
 };
 
@@ -180,6 +181,7 @@ void verifyNet(Info i, double x, double y, double mbbX1, double mbbY1, double mb
                     fprintf(lr->qrytxt, "Captured algae or debris %d (%.2lf, %.2lf) worth nothing.\n", getFormId(i), x, y);
                 }
             }
+            free(removeSRb(lr->tree, x, y, 0, 0, 0, 0));
         }
     }
 }
@@ -194,6 +196,7 @@ double throwNet(Info i, char* side, double d, double w, double h, void* tree, FI
             struct lr* aux = calloc(1, sizeof(struct lr));
             aux->w = w;
             aux->h = h;
+            aux->tree = tree;
             aux->qrytxt = qrytxt;
             fprintf(qrytxt, "Energy before throw: %.2lf\n", getNauEnergy(i));
             setNauEnergy(i, getNauEnergy(i) - w * h * d / 125);
